@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+<!--    <ui:Template name="MinMaxDurationSlider" src="MinMaxDurationSlider.uxml" />-->
+    <ui:Instance template="MinMaxDurationSlider" name="AnimationClipTransferClipDrawer" />
+</ui:UXML>

@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="MinMaxDurationSlider.uss" />
+    <ui:Label text="ChildName" display-tooltip-when-elided="true" name="ChildName" />
+    <ui:VisualElement style="margin-left: 8px;">
+        <ui:MinMaxSlider picking-mode="Ignore" min-value="3" max-value="7" low-limit="0" high-limit="10" style="flex-direction: row; align-items: center; margin-top: 4px;" />
+        <ui:VisualElement style="flex-direction: row; justify-content: space-between;">
+            <uie:FloatField label="Min" value="0" binding-path="MinMaxDuration_Min" style="width: 20%; max-width: 20%; min-width: 20%; position: relative; white-space: nowrap; -unity-text-align: middle-left; opacity: 1; flex-direction: column;" />
+            <uie:FloatField label="Duration" value="4" name="FloatField" binding-path="MinMaxDuration_Duration" style="width: 20%; max-width: 20%; min-width: 20%; position: relative; white-space: nowrap; -unity-text-align: middle-left; opacity: 1; flex-direction: column;" />
+            <uie:FloatField label="Max" value="10" binding-path="MinMaxDuration_Max" style="width: 20%; max-width: 20%; min-width: 20%; position: relative; white-space: nowrap; -unity-text-align: middle-left; opacity: 1; flex-direction: column;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

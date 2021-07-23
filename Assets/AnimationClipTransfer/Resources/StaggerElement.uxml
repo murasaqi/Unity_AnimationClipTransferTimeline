@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="MinMaxDurationSlider" />
+    <ui:Instance template="MinMaxDurationSlider" name="MinMaxDurationSlider" binding-path="name" />
+</ui:UXML>

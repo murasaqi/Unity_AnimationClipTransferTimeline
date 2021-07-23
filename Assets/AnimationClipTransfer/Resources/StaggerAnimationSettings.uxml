@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <uie:ObjectField label="Target Object" name="TargetObject" binding-path="targetObject" />
+    <uie:ObjectField label="Animation Clip" name="AnimationClip" binding-path="animationClip" />
+    <uie:EnumField label="Animation Target Tyep" value="a b" name="AnimationTargetType" binding-path="animationTargetType" style="height: 16.66666px;" />
+    <ui:Foldout text="Stagger Settings" name="StaggerSliderFoldout">
+        <uie:EnumField label="StaggerType" value="Center" name="StaggerType" binding-path="staggerType" />
+        <ui:Slider name="StaggerRatio" picking-mode="Ignore" label="Slider" value="0" high-value="1" binding-path="staggerRatio" />
+        <ui:VisualElement name="StaggerPropList" style="margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px; height: auto; align-items: stretch; justify-content: space-around;" />
+    </ui:Foldout>
+    <ui:Foldout text="Transform Calc Type" name="TransformCalcType">
+        <uie:EnumField label="Rotation" value="Center" name="EulerCalcType" binding-path="positionCalcType" />
+        <uie:EnumField label="Position" value="Center" name="PositionCalcType" binding-path="eulerCalcType" />
+    </ui:Foldout>
+</ui:UXML>

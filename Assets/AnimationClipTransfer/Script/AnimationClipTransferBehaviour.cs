@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.Playables;
 
-// namespace AnimationClipTransfer
-// {
+namespace UMotionGraphicUtilities
+{
 
     [Serializable]
     public class AnimationClipTransferBehaviour : PlayableBehaviour
@@ -12,7 +12,7 @@ using UnityEngine.Playables;
         public GameObject TartgetObject;
         // public double Curve;
 
-        public float a = 1f;
+        private float a = 1f;
 
         public override void OnPlayableCreate(Playable playable)
         {
@@ -22,4 +22,4 @@ using UnityEngine.Playables;
 
 
     }
-// }
+}

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UMotionGraphicUtilities
 {
@@ -9,23 +10,29 @@ namespace UMotionGraphicUtilities
     public class AnimationClipTransfer : MonoBehaviour
     {
 
-        [SerializeField] private AnimationClip animationClip;
-        [SerializeField] private GameObject targetObject;
-        [SerializeField] private AnimationTargetType animationTargetType;
-        [SerializeField] private bool toggleActiveOnClip;
-        [SerializeField] private ValueCalcType positionCalcType;
-        [SerializeField] private ValueCalcType eulerCalcType;
-        [SerializeField] private ValueCalcType scaleCalcScale;
-        [SerializeField] private StaggerType staggerType;
-        [SerializeField] private List<StaggerPropsBehaviour> staggerPropsList =new List<StaggerPropsBehaviour>();
+        [HideInInspector] [SerializeField] private AnimationClip animationClip;
+        [HideInInspector] [SerializeField] private GameObject targetObject;
+        // [SerializeField] private AnimationTargetType animationTargetType;
+        // [SerializeField] private bool toggleActiveOnClip;
+        [HideInInspector] [SerializeField] private ValueCalcType positionCalcType = ValueCalcType.Add;
+        [HideInInspector] [SerializeField] private ValueCalcType eulerCalcType = ValueCalcType.Add;
+        [HideInInspector] [SerializeField] private ValueCalcType scaleCalcType = ValueCalcType.Multiply;
+        [HideInInspector] [SerializeField] private StaggerType staggerType = StaggerType.AutoInOut;
+        [HideInInspector] [SerializeField] private List<StaggerPropsBehaviour> staggerPropsList =new List<StaggerPropsBehaviour>();
         // [SerializeField] private StaggerOption staggerOption;
-        [SerializeField] private float staggerRatio = 0.3f;
-        [SerializeField] private TransformCash transformCash = null;
-        [SerializeField] private List<TransformCash> childTransformCash = null;
-        [SerializeField] private bool debugMode = false;
-        [SerializeField] [Range(0, 1)] private float debugProgress;
-        private float _previousProgress = 0f;
+        [HideInInspector] [SerializeField] private float staggerRatio = 0.3f;
+        // [SerializeField] private TransformCash transformCash = null;
+        [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
+        [HideInInspector] [SerializeField] private bool debugMode = false;
+        [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
+        // private float _previousProgress = 0f;
 
+
+        public bool DebugMode
+        {
+            get => debugMode;
+            set => debugMode = value;
+        }
         public GameObject TargetObject
         {
             get => targetObject;
@@ -57,27 +64,16 @@ namespace UMotionGraphicUtilities
 
         private void OnValidate()
         {
-            if (transformCash != null && transformCash.OwnTransform != targetObject.transform)
-            {
-                Init();
-            }
         }
 
 
         public void Init()
         {
+            Debug.Log("Init");
+            Debug.Log(targetObject);
             if (targetObject == null) return;
-
-            // targetObject = clone.TartgetObject;
-            transformCash = new TransformCash();
-            transformCash.OwnTransform = targetObject.transform;
-            transformCash.LocalPosition = targetObject.transform.localPosition;
-            transformCash.LocalEulerAngle = targetObject.transform.localEulerAngles;
-            transformCash.LocalScale = targetObject.transform.localScale;
-            transformCash.Progress = -1f;
-
-
-            if (childTransformCash == null) childTransformCash = new List<TransformCash>();
+            
+            // childTransformCash = new List<TransformCash>();
             childTransformCash.Clear();
             foreach (Transform child in targetObject.transform)
             {
@@ -94,10 +90,18 @@ namespace UMotionGraphicUtilities
 
         }
 
+        public void ResetChildTransform()
+        {
+            debugProgress = 0;
+            foreach (var cash in childTransformCash)
+            {
+                cash.ResetTransform();
+            }
+        }
+
         public void InitStaggerValues()
         {
-            // staggerPropsList.Clear();
-            // staggerPropsList = new List<StaggerPropsBehaviour>();
+            if(targetObject == null) return;
             var childLength = targetObject.transform.childCount;
             var childCount = 0;
             
@@ -107,6 +111,7 @@ namespace UMotionGraphicUtilities
             
             foreach (Transform child in targetObject.transform)
             {
+                Debug.Log(child.name);
                 StaggerPropsBehaviour staggerPropsBehaviour;
                 if (staggerPropsList.Count <= childCount)
                 {
@@ -115,13 +120,14 @@ namespace UMotionGraphicUtilities
                 }
 
                 staggerPropsBehaviour = staggerPropsList[childCount];
-
+                staggerPropsBehaviour.name = $"{childCount}: {child.gameObject.name}";
                 if (staggerType != StaggerType.Custom)
                 { 
                     var isIn = (staggerType == StaggerType.AutoIn || staggerType == StaggerType.AutoInOut);
                     var isOut = staggerType == StaggerType.AutoOut || staggerType == StaggerType.AutoInOut;
                     var childStart = isIn ? ratioStep * childCount : 0;
                     var childEnd = isOut ? 1f - ratioStep * (childLength - 1 - childCount) : 1;
+                    
                     
                     staggerPropsBehaviour.lowLimit = 0;
                     staggerPropsBehaviour.highLimit = 1;
@@ -143,82 +149,81 @@ namespace UMotionGraphicUtilities
         void Update()
         {
 
-            if (targetObject != null && transformCash == null || targetObject != null && childTransformCash == null)
+            if (targetObject != null && targetObject != null && childTransformCash == null)
             {
                 Init();
             }
 
-            if (debugMode && _previousProgress != debugProgress)
-            {
-                ProcessFrame(debugProgress);
-                _previousProgress = debugProgress;
-            }
+            // if (debugMode && _previousProgress != debugProgress)
+            // {
+            //     ProcessFrame(debugProgress);
+            //     _previousProgress = debugProgress;
+            // }
         }
 
         public void ProcessFrame(float progress)
         {
             if (animationClip == null || targetObject == null) return;
-            
+            if(transform.childCount == 0) return;
+            ;
             if(staggerPropsList.Count == 0 || staggerPropsList.Count != targetObject.transform.childCount) InitStaggerValues();
 
-            if (animationTargetType == AnimationTargetType.Own)
-            {
+            if(childTransformCash.Count <= 0) Init();
+            // if (animationTargetType == AnimationTargetType.Own)
+            // {
+            //
+            //     var animation = targetObject.GetComponent<Animation>();
+            //     if (animation == null)
+            //     {
+            //         animation = targetObject.AddComponent<Animation>();
+            //     }
+            //     animation.clip = animationClip;
+            //     UpdateAnimation(transformCash, progress);
+            //
+            // }
+            //
+            // if (animationTargetType == AnimationTargetType.Children)
+            // {
+               
+            // var childLength = targetObject.transform.childCount;
+            var childCount = 0;
 
-                var animation = targetObject.GetComponent<Animation>();
+            InitStaggerValues();
+            foreach (Transform child in targetObject.transform)
+            {
+                // var isIn = staggerOption.In;
+                // var isOut = staggerOption.Out;
+                // var childStart = isIn ? ratioStep * childCount : 0;
+                // var childEnd = isOut ? 1f - ratioStep * (childLength - 1 - childCount) : 1;
+                // Debug.Log(child.name);
+
+                var childProgress = Mathf.Clamp(Mathf.InverseLerp( staggerPropsList[childCount].startTiming,  staggerPropsList[childCount].endTiming, (float) progress), 0f, 1f);
+                // Debug.Log($"{child.name},{childProgress}");
+
+                // Debug.Log($"{child.name},{childStart},{childEnd},{childProgress}");
+                var animation = child.gameObject.GetComponent<Animation>();
                 if (animation == null)
                 {
-                    animation = targetObject.AddComponent<Animation>();
+                    animation = child.gameObject.AddComponent<Animation>();
                 }
                 animation.clip = animationClip;
-                UpdateAnimation(transformCash, progress);
+                UpdateAnimation(childTransformCash[childCount], childProgress);
+
+                childCount++;
 
             }
-
-            if (animationTargetType == AnimationTargetType.Children)
-            {
-                // var ratio = staggerOption.StaggerRatio;
-                // if (staggerOption.In && staggerOption.Out) ratio *= 0.5f;
-                // var ratioStep = ratio / (targetObject.transform.childCount - 1);
-
-                var childLength = targetObject.transform.childCount;
-                var childCount = 0;
-
-                InitStaggerValues();
-                foreach (Transform child in targetObject.transform)
-                {
-                    // var isIn = staggerOption.In;
-                    // var isOut = staggerOption.Out;
-                    // var childStart = isIn ? ratioStep * childCount : 0;
-                    // var childEnd = isOut ? 1f - ratioStep * (childLength - 1 - childCount) : 1;
-                    // Debug.Log(child.name);
-
-                    var childProgress = Mathf.Clamp(Mathf.InverseLerp( staggerPropsList[childCount].startTiming,  staggerPropsList[childCount].endTiming, (float) progress), 0f, 1f);
-                    // Debug.Log($"{child.name},{childProgress}");
-
-                    // Debug.Log($"{child.name},{childStart},{childEnd},{childProgress}");
-                    var animation = child.gameObject.GetComponent<Animation>();
-                    if (animation == null)
-                    {
-                        animation = child.gameObject.AddComponent<Animation>();
-                    }
-                    animation.clip = animationClip;
-                    UpdateAnimation(childTransformCash[childCount], childProgress);
-
-                    childCount++;
-
-                }
-            }
+            // }
         }
 
         public void UpdateAnimation(TransformCash transformCash, float progress)
         {
             var target = transformCash.OwnTransform.gameObject;
             // var clipAsset = clip.asset as AnimationClipTransferClip;
-            if (toggleActiveOnClip) target.SetActive(true);
+            // if (toggleActiveOnClip) target.SetActive(true);
 
 
-            if (transformCash.Progress != progress)
-            {
+            // if (transformCash.Progress != progress)
+            // {
 
 
 
@@ -278,24 +283,24 @@ namespace UMotionGraphicUtilities
                 if (target.transform.localScale != transformCash.LocalScale)
                 {
 
-                    if (scaleCalcScale == ValueCalcType.Add)
+                    if (scaleCalcType == ValueCalcType.Add)
                     {
                         target.transform.localScale += transformCash.LocalScale;
                     }
 
-                    if (scaleCalcScale == ValueCalcType.Subtract)
+                    if (scaleCalcType == ValueCalcType.Subtract)
                     {
                         target.transform.localScale -= transformCash.LocalScale;
                     }
 
-                    if (scaleCalcScale == ValueCalcType.Multiply)
+                    if (scaleCalcType == ValueCalcType.Multiply)
                     {
                         var offsetScale = target.transform.localScale;
                         target.transform.localScale = Vector3.Scale(offsetScale, transformCash.LocalScale);
                     }
 
                 }
-            }
+            // }
 
         }
     }

@@ -10,10 +10,6 @@ namespace UMotionGraphicUtilities
     [CustomEditor(typeof(AnimationClipTransfer), true)]
     public class AnimationClipTransferEditor : Editor
     {
-        // public override void OnInspectorGUI()
-        // {
-        //     // DrawDefaultInspector();
-        // }
 
         public override VisualElement CreateInspectorGUI()
         {
@@ -28,36 +24,76 @@ namespace UMotionGraphicUtilities
             button.clickable.clicked += target.Init;
             root.Add(button);
 
+            
             // デフォルトのInspector表示を追加
             IMGUIContainer defaultInspector = new IMGUIContainer(() => DrawDefaultInspector());
             root.Add(defaultInspector);
 
-
             var visualTree = Resources.Load<VisualTreeAsset>("StaggerAnimationSettings");
             visualTree.CloneTree(root);
+
+            var targetObject = root.Query<ObjectField>("TargetObject").First();
+            targetObject.objectType = typeof(GameObject);
+            var animationClip = root.Query<ObjectField>("AnimationClip").First();
+            animationClip.objectType = typeof(AnimationClip);
 
             
             var minMaxSliderElement = Resources.Load<VisualTreeAsset>("MinMaxDurationSlider");
             var staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
+            
+            
+            targetObject.RegisterValueChangedCallback((evt) =>
+            {
+                Debug.Log(evt.newValue);
+                if (evt.newValue != null)
+                {
+                    target.TargetObject = evt.newValue as GameObject;
+                    target.Init();
+                    target.InitStaggerValues(); 
+                    UpdateStaggerUI(target.StaggerPropsList, staggerPropList);
+                    
+                }
+            });
+            
+           
 
             var count = 0;
             foreach (var staggerProps in target.StaggerPropsList)
             {
                var clone = minMaxSliderElement.CloneTree();
              
-                SetUpStaggerList(clone, count);
+                SetUpStaggerList(clone, count, staggerProps.name);
                 staggerPropList.Add(clone);
+                
                 count++;
             }
-            
-            
+            var staggerRatio = root.Query<Slider>("StaggerRatio").First(); 
+            staggerRatio.RegisterValueChangedCallback((evt) =>
+            {
+                target.InitStaggerValues();
+                UpdateStaggerUI(target.StaggerPropsList, staggerPropList); 
+            });
+           
+           
             root.Query<EnumField>("StaggerType").First().RegisterValueChangedCallback((evt) =>
             {
 
-                if (evt.newValue.ToString() == "AutoIn") target.StaggerType = StaggerType.AutoIn;
-                if (evt.newValue.ToString() == "AutoOut") target.StaggerType = StaggerType.AutoOut;
-                if (evt.newValue.ToString() == "AutoInOut") target.StaggerType = StaggerType.AutoInOut;
-                if (evt.newValue.ToString() == "Custom") target.StaggerType = StaggerType.Custom;
+                if (evt.newValue != null)
+                { 
+                    if (evt.newValue.ToString() == "AutoIn") target.StaggerType = StaggerType.AutoIn;
+                    if (evt.newValue.ToString() == "AutoOut") target.StaggerType = StaggerType.AutoOut;
+                    if (evt.newValue.ToString() == "AutoInOut") target.StaggerType = StaggerType.AutoInOut;
+                    if (evt.newValue.ToString() == "Custom")
+                    {
+                        target.StaggerType = StaggerType.Custom;
+                        staggerRatio.SetEnabled(false);
+                    }
+                    else
+                    {
+                        staggerRatio.SetEnabled(true);
+                    }
+                }
+              
                 Debug.Log(target.StaggerType);
                 // target.StaggerType = 
                 target.InitStaggerValues();
@@ -65,12 +101,40 @@ namespace UMotionGraphicUtilities
             });
 
             
-            root.Query<Slider>("StaggerRatio").First().RegisterValueChangedCallback((evt) =>
+            
+                
+            var debugProgress = root.Query<Slider>("DebugProgress").First();
+            debugProgress.RegisterValueChangedCallback((evt) =>
             {
-                target.InitStaggerValues();
-                UpdateStaggerUI(target.StaggerPropsList, staggerPropList);
+                if(target.DebugMode) target.ProcessFrame(evt.newValue);
             });
 
+
+            root.Query<Toggle>("DebugMode").First().RegisterValueChangedCallback((evt) =>
+            {
+                if (evt.newValue == false && evt.previousValue == true)
+                {
+                    target.ResetChildTransform();
+                }
+
+                if (evt.newValue)
+                {
+                    target.ProcessFrame(debugProgress.value);
+                }
+                
+                if(evt.newValue == false)debugProgress.SetValueWithoutNotify(0);
+                debugProgress.SetEnabled(evt.newValue);
+
+                target.DebugMode = evt.newValue;
+            });
+            
+            
+            
+            
+            
+            
+            
+            
             return root;
         }
 
@@ -96,12 +160,16 @@ namespace UMotionGraphicUtilities
             }
         }
 
-        private void SetUpStaggerList(VisualElement root, int index)
+        private void SetUpStaggerList(VisualElement root, int index, string childName)
         {
             var target = serializedObject.targetObject as AnimationClipTransfer;
             var staggerProps = target.StaggerPropsList[index];
             var delayField = root.Query<FloatField>("Start").First();
 
+
+            root.Query<Label>("Name").First().text = childName;
+                
+                
             delayField.value = staggerProps.startTiming;
             delayField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
             {

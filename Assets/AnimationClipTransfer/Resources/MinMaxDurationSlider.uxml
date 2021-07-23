@@ -1,25 +1,27 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <Style src="MinMaxDurationSlider.uss" />
-    <ui:Label text="name" display-tooltip-when-elided="true" name="Title" binding-path="name" style="margin-top: 1px; margin-left: 0; margin-right: 0; margin-bottom: 1px;" />
-    <ui:MinMaxSlider min-value="0.3" max-value="0.7" low-limit="0" high-limit="1" name="MinMaxSlider" style="flex-direction: row; align-items: center; margin-top: 4px;" />
-    <ui:Foldout text="Foldout" focusable="false" value="false">
-        <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: nowrap;">
-            <ui:VisualElement name="LowLimitElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto; height: 20px;">
-                <ui:Label text="Min" display-tooltip-when-elided="true" name="MinValue" binding-path="minValue" style="color: rgb(153, 212, 212);" />
-                <uie:FloatField value="0" name="LowLimit" binding-path="lowLimit" readonly="false" style="min-width: auto; max-width: 40px; width: auto; justify-content: space-between;" />
+    <ui:Label text="name" display-tooltip-when-elided="true" name="Name" style="margin-top: 1px; margin-left: 0; margin-right: 0; margin-bottom: 1px; -unity-font-style: italic; color: rgba(194, 157, 238, 255);" />
+    <ui:VisualElement style="padding-left: 20px;">
+        <ui:MinMaxSlider min-value="0.3" max-value="0.7" low-limit="0" high-limit="1" name="MinMaxSlider" style="flex-direction: row; align-items: center; margin-top: 4px;" />
+        <ui:Foldout text="Values" focusable="false" value="false" name="ValuesFoldout" style="-unity-font-style: normal; font-size: 12px;">
+            <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: nowrap;">
+                <ui:VisualElement name="LowLimitElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto; height: 20px;">
+                    <ui:Label text="Min" display-tooltip-when-elided="true" name="MinValue" binding-path="minValue" style="color: rgb(157, 224, 238);" />
+                    <uie:FloatField value="0" name="LowLimit" binding-path="lowLimit" readonly="false" style="min-width: auto; max-width: 40px; width: auto; justify-content: space-between;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="StartElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto; margin-left: 3px; margin-right: 3px; margin-top: 0; margin-bottom: 0;">
+                    <ui:Label text="Start" display-tooltip-when-elided="true" name="DelayLabel" style="color: rgba(51, 229, 122, 255);" />
+                    <uie:FloatField value="0.3" name="Start" binding-path="startTiming" style="min-width: auto; max-width: 40px; width: auto;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="EndElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto;">
+                    <ui:Label text="End" display-tooltip-when-elided="true" name="EndLabel" style="color: rgba(241, 211, 72, 255);" />
+                    <uie:FloatField value="0.3" name="End" binding-path="endTiming" style="min-width: auto; max-width: 40px; width: auto;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="HighLimitElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto; justify-content: flex-end;">
+                    <ui:Label text="Max" display-tooltip-when-elided="true" name="maxValueLabel" binding-path="maxValue" style="color: rgb(226, 174, 223);" />
+                    <uie:FloatField value="1" name="HighLimit" binding-path="highLimit" readonly="false" style="min-width: auto; max-width: 40px; width: auto;" />
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="StartElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto; margin-left: 3px; margin-right: 3px; margin-top: 0; margin-bottom: 0;">
-                <ui:Label text="Start" display-tooltip-when-elided="true" name="DelayLabel" />
-                <uie:FloatField value="0.3" name="Start" binding-path="startTiming" style="min-width: auto; max-width: 40px; width: auto;" />
-            </ui:VisualElement>
-            <ui:VisualElement name="EndElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto;">
-                <ui:Label text="End" display-tooltip-when-elided="true" name="EndLabel" />
-                <uie:FloatField value="0.3" name="End" binding-path="endTiming" style="min-width: auto; max-width: 40px; width: auto;" />
-            </ui:VisualElement>
-            <ui:VisualElement name="HighLimitElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto; justify-content: flex-end;">
-                <ui:Label text="Max" display-tooltip-when-elided="true" name="maxValueLabel" binding-path="maxValue" style="color: rgb(202, 142, 189);" />
-                <uie:FloatField value="1" name="HighLimit" binding-path="highLimit" readonly="false" style="min-width: auto; max-width: 40px; width: auto;" />
-            </ui:VisualElement>
-        </ui:VisualElement>
-    </ui:Foldout>
+        </ui:Foldout>
+    </ui:VisualElement>
 </ui:UXML>

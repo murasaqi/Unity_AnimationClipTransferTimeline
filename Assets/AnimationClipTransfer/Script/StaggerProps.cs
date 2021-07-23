@@ -11,6 +11,7 @@ namespace UMotionGraphicUtilities
     [Serializable]
     public class StaggerPropsBehaviour
     {
+        public string name;
         [Range(0,1) ]  public float startTiming = 0.3f;
         [Range(0,1) ]public float endTiming = 0.7f;
 

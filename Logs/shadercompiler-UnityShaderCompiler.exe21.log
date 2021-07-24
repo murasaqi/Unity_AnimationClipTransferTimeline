@@ -1,23 +1,3 @@
 Base path: 'C:/Program Files/Unity/Hub/Editor/2021.1.14f1/Editor/Data', plugins path 'C:/Program Files/Unity/Hub/Editor/2021.1.14f1/Editor/Data/PlaybackEngines'
 Cmd: initializeCompiler
 
-Cmd: compileComputeKernel
-  insize=6121 file=D:/works/Unity_AnimationClipTransferTimeline/Library/PackageCache/com.unity.render-pipelines.high-definition@11.0.0/Runtime/PostProcessing/Shaders/MotionBlurMotionVecPrep.compute kernel=MotionVecPreppingCS cachingPP=1 ppOnly=0 stripLineD=0 buildPlatform=19 km=<MOTION_VEC_PREPPING=1>,<UNITY_VERSION=202119> pKW=UNITY_ENABLE_REFLECTION_BUFFERS UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING UNITY_ENABLE_DETAIL_NORMALMAP SHADER_API_DESKTOP UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_LIGHTMAP_FULL_HDR uKW=CAMERA_DISABLE_CAMERA SHADER_STAGE_COMPUTE platform=d3d11 flags=0 reqs=16385 forceDXC=0 forceFXC=0 ok=1 outsize=3615
-
-Cmd: compileComputeKernel
-  insize=9221 file=D:/works/Unity_AnimationClipTransferTimeline/Library/PackageCache/com.unity.visualeffectgraph@11.0.0/Shaders/Sort.compute kernel=MergePass cachingPP=1 ppOnly=0 stripLineD=0 buildPlatform=19 km=<MERGE_PASS=MergePass>,<FINAL_PASS=0>,<UNITY_VERSION=202119> pKW=UNITY_ENABLE_REFLECTION_BUFFERS UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING UNITY_ENABLE_DETAIL_NORMALMAP SHADER_API_DESKTOP UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_LIGHTMAP_FULL_HDR uKW=SHADER_STAGE_COMPUTE platform=d3d11 flags=0 reqs=16385 forceDXC=0 forceFXC=0 ok=1 outsize=4302
-
-Cmd: compileComputeKernel
-  insize=11045 file=D:/works/Unity_AnimationClipTransferTimeline/Library/PackageCache/com.unity.render-pipelines.high-definition@11.0.0/Runtime/Lighting/PlanarReflectionFiltering.compute kernel=FilterPlanarReflection cachingPP=1 ppOnly=0 stripLineD=0 buildPlatform=19 km=<UNITY_VERSION=202119> pKW=UNITY_ENABLE_REFLECTION_BUFFERS UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING UNITY_ENABLE_DETAIL_NORMALMAP SHADER_API_DESKTOP UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_LIGHTMAP_FULL_HDR uKW=SHADER_STAGE_COMPUTE platform=d3d11 flags=0 reqs=16385 forceDXC=0 forceFXC=0 ok=1 outsize=3364
-
-Cmd: compileComputeKernel
-  insize=39128 file=D:/works/Unity_AnimationClipTransferTimeline/Library/PackageCache/com.unity.render-pipelines.high-definition@11.0.0/Runtime/Lighting/VolumetricLighting/VolumetricLighting.compute kernel=VolumetricLighting cachingPP=1 ppOnly=0 stripLineD=0 buildPlatform=19 km=<UNITY_VERSION=202119> pKW=UNITY_ENABLE_REFLECTION_BUFFERS UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING UNITY_ENABLE_DETAIL_NORMALMAP SHADER_API_DESKTOP UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_LIGHTMAP_FULL_HDR uKW=ENABLE_REPROJECTION SUPPORT_LOCAL_LIGHTS VL_PRESET_OPTIMAL SHADER_STAGE_COMPUTE platform=d3d11 flags=0 reqs=16385 forceDXC=0 forceFXC=0 ok=1 outsize=47632
-
-Cmd: compileComputeKernel
-  insize=10750 file=D:/works/Unity_AnimationClipTransferTimeline/Library/PackageCache/com.unity.render-pipelines.high-definition@11.0.0/Runtime/Lighting/LightLoop/Deferred.compute kernel=Deferred_Indirect_Fptl_Variant1 cachingPP=1 ppOnly=0 stripLineD=0 buildPlatform=19 km=<SHADE_OPAQUE_ENTRY=Deferred_Indirect_Fptl_Variant1>,<USE_INDIRECT=1>,<VARIANT=1>,<UNITY_VERSION=202119> pKW=UNITY_ENABLE_REFLECTION_BUFFERS UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING UNITY_ENABLE_DETAIL_NORMALMAP SHADER_API_DESKTOP UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_LIGHTMAP_FULL_HDR uKW=SCREEN_SPACE_SHADOWS_ON SHADOWS_SHADOWMASK SHADOW_HIGH SHADER_STAGE_COMPUTE platform=d3d11 flags=0 reqs=16385 forceDXC=0 forceFXC=0 ok=1 outsize=18368
-
-Cmd: compileComputeKernel
-  insize=10750 file=D:/works/Unity_AnimationClipTransferTimeline/Library/PackageCache/com.unity.render-pipelines.high-definition@11.0.0/Runtime/Lighting/LightLoop/Deferred.compute kernel=Deferred_Direct_Fptl cachingPP=1 ppOnly=0 stripLineD=0 buildPlatform=19 km=<SHADE_OPAQUE_ENTRY=Deferred_Direct_Fptl>,<UNITY_VERSION=202119> pKW=UNITY_ENABLE_REFLECTION_BUFFERS UNITY_USE_DITHER_MASK_FOR_ALPHABLENDED_SHADOWS UNITY_PBS_USE_BRDF1 UNITY_SPECCUBE_BOX_PROJECTION UNITY_SPECCUBE_BLENDING UNITY_ENABLE_DETAIL_NORMALMAP SHADER_API_DESKTOP UNITY_LIGHT_PROBE_PROXY_VOLUME UNITY_LIGHTMAP_FULL_HDR uKW=SCREEN_SPACE_SHADOWS_OFF SHADOWS_SHADOWMASK SHADOW_HIGH SHADER_STAGE_COMPUTE platform=d3d11 flags=0 reqs=16385 forceDXC=0 forceFXC=0 ok=1 outsize=113992
-
-Cmd: initializeCompiler
-

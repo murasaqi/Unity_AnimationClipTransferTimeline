@@ -1,5 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <Style src="MinMaxDurationSlider.uss" />
     <ui:Label text="name" display-tooltip-when-elided="true" name="Name" style="margin-top: 1px; margin-left: 0; margin-right: 0; margin-bottom: 1px; -unity-font-style: italic; color: rgba(194, 157, 238, 255);" />
     <ui:VisualElement style="padding-left: 20px;">
         <ui:MinMaxSlider min-value="0.3" max-value="0.7" low-limit="0" high-limit="1" name="MinMaxSlider" style="flex-direction: row; align-items: center; margin-top: 4px;" />

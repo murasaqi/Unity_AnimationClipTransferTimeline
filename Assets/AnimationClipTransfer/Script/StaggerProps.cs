@@ -18,6 +18,7 @@ namespace UMotionGraphicUtilities
         public float lowLimit = 0;
         public float highLimit = 2;
 
+        public float RandomSeed = 0;
 
     }
     

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Timers;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -8,70 +10,96 @@ namespace UMotionGraphicUtilities
 {
 
     [CustomEditor(typeof(AnimationClipTransfer), true)]
+    
     public class AnimationClipTransferEditor : Editor
     {
-
+        private AnimationClipTransfer _serializedTargetObject;
+        private VisualElement staggerPropList;
+        private VisualElement root;
+        private VisualElement animationProps;
+        private Button applyChildrenButton;
+        private Slider debugProgressSlider;
+        private VisualElement DebugPlayer;
+        private Timer timer;
         public override VisualElement CreateInspectorGUI()
         {
-            // Inspector拡張の場合、VisualElementはnewする
-            var root = new VisualElement();
-            var target = serializedObject.targetObject as AnimationClipTransfer;
-            root.Bind(serializedObject);
-            var button = new Button
-            {
-                text = "Init"
-            };
-            button.clickable.clicked += target.Init;
-            root.Add(button);
-
             
-            // デフォルトのInspector表示を追加
-            IMGUIContainer defaultInspector = new IMGUIContainer(() => DrawDefaultInspector());
-            root.Add(defaultInspector);
-
+            // Inspector拡張の場合、VisualElementはnewする
+            root = new VisualElement();
+            _serializedTargetObject = serializedObject.targetObject as AnimationClipTransfer;
+            root.Bind(serializedObject);
+            root.viewDataKey = "AnimationClipTransfer";
+            
+            
             var visualTree = Resources.Load<VisualTreeAsset>("StaggerAnimationSettings");
             visualTree.CloneTree(root);
+            
+            
+            // var prop1 = new PropertyField(serializedObject.FindProperty("childTransformCash"), "Child Transform Cash");
+            // root.Query<VisualElement>("TransformCash").First().Add(prop1);
+            //
+            var container = new IMGUIContainer(OnInspectorGUI);
+            root.Add(container);
+            
+            staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
+            animationProps = root.Query<VisualElement>("AnimationProps");
+            applyChildrenButton = root.Query<Button>("ApplyChildrenButton").First();
 
-            var targetObject = root.Query<ObjectField>("TargetObject").First();
-            targetObject.objectType = typeof(GameObject);
-            var animationClip = root.Query<ObjectField>("AnimationClip").First();
-            animationClip.objectType = typeof(AnimationClip);
+            var targetObjectField = root.Query<ObjectField>("TargetObject").First();
+            targetObjectField.objectType = typeof(GameObject);
+            var animationClipField = root.Query<ObjectField>("AnimationClip").First();
+            animationClipField.objectType = typeof(AnimationClip);
 
+            targetObjectField.value = _serializedTargetObject.TargetObject;
+            animationClipField.value = _serializedTargetObject.AnimationClip;
             
-            var minMaxSliderElement = Resources.Load<VisualTreeAsset>("MinMaxDurationSlider");
-            var staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
+            // root.Query<Foldout>("StaggerSliderFoldout").First().viewDataKey = $"StaggerSliderFoldout_{true}";
             
-            
-            targetObject.RegisterValueChangedCallback((evt) =>
+            applyChildrenButton.clicked += () =>
             {
-                Debug.Log(evt.newValue);
+                _serializedTargetObject.Init();
+
+                if (_serializedTargetObject.ChildTransformCashCount > 0)
+                {
+                    animationProps.SetEnabled(true);
+                    root.Query<Foldout>("StaggerSliderFoldout").First().value = true;
+                    
+                    root.Query<Foldout>("TransformCalcType").First().value = true;
+                }
+            };
+
+
+
+            animationClipField.RegisterValueChangedCallback((evt) =>
+            {
                 if (evt.newValue != null)
                 {
-                    target.TargetObject = evt.newValue as GameObject;
-                    target.Init();
-                    target.InitStaggerValues(); 
-                    UpdateStaggerUI(target.StaggerPropsList, staggerPropList);
+                    if (targetObjectField.value) applyChildrenButton.SetEnabled(true);
+                    _serializedTargetObject.AnimationClip = evt.newValue as AnimationClip;
+
+                }
+            });
+         
+            
+            
+            targetObjectField.RegisterValueChangedCallback((evt) =>
+            {
+                if (evt.newValue != null)
+                {
+                    if(animationClipField.value)applyChildrenButton.SetEnabled(true);
+                    _serializedTargetObject.TargetObject = evt.newValue as GameObject;
+                    // _serializedTargetObject.Init();
+                    InitStaggerUIList();
                     
                 }
             });
             
-           
-
-            var count = 0;
-            foreach (var staggerProps in target.StaggerPropsList)
-            {
-               var clone = minMaxSliderElement.CloneTree();
-             
-                SetUpStaggerList(clone, count, staggerProps.name);
-                staggerPropList.Add(clone);
-                
-                count++;
-            }
+            
             var staggerRatio = root.Query<Slider>("StaggerRatio").First(); 
             staggerRatio.RegisterValueChangedCallback((evt) =>
             {
-                target.InitStaggerValues();
-                UpdateStaggerUI(target.StaggerPropsList, staggerPropList); 
+                _serializedTargetObject.InitStaggerValues();
+                InitStaggerUIList();
             });
            
            
@@ -80,12 +108,13 @@ namespace UMotionGraphicUtilities
 
                 if (evt.newValue != null)
                 { 
-                    if (evt.newValue.ToString() == "AutoIn") target.StaggerType = StaggerType.AutoIn;
-                    if (evt.newValue.ToString() == "AutoOut") target.StaggerType = StaggerType.AutoOut;
-                    if (evt.newValue.ToString() == "AutoInOut") target.StaggerType = StaggerType.AutoInOut;
+                    if (evt.newValue.ToString() == "AutoIn") _serializedTargetObject.StaggerType = StaggerType.AutoIn;
+                    if (evt.newValue.ToString() == "AutoOut") _serializedTargetObject.StaggerType = StaggerType.AutoOut;
+                    if (evt.newValue.ToString() == "AutoInOut") _serializedTargetObject.StaggerType = StaggerType.AutoInOut;
+                    if (evt.newValue.ToString() == "Random") _serializedTargetObject.StaggerType = StaggerType.Random;
                     if (evt.newValue.ToString() == "Custom")
                     {
-                        target.StaggerType = StaggerType.Custom;
+                        _serializedTargetObject.StaggerType = StaggerType.Custom;
                         staggerRatio.SetEnabled(false);
                     }
                     else
@@ -94,73 +123,112 @@ namespace UMotionGraphicUtilities
                     }
                 }
               
-                Debug.Log(target.StaggerType);
-                // target.StaggerType = 
-                target.InitStaggerValues();
-                UpdateStaggerUI(target.StaggerPropsList, staggerPropList);
+                _serializedTargetObject.InitStaggerValues();
+                InitStaggerUIList();
             });
 
-            
-            
-                
-            var debugProgress = root.Query<Slider>("DebugProgress").First();
-            debugProgress.RegisterValueChangedCallback((evt) =>
+
+
+
+            DebugPlayer = root.Query<VisualElement>("DebugPlayer");
+            debugProgressSlider = root.Query<Slider>("DebugProgress").First();
+            debugProgressSlider.RegisterValueChangedCallback((evt) =>
             {
-                if(target.DebugMode) target.ProcessFrame(evt.newValue);
+                if(_serializedTargetObject.DebugMode) _serializedTargetObject.ProcessFrame(evt.newValue);
             });
 
 
+            // root.Query<Button>("DebugPlayButton").First().clickable.clicked += _serializedTargetObject.DebugPlay;
             root.Query<Toggle>("DebugMode").First().RegisterValueChangedCallback((evt) =>
             {
-                if (evt.newValue == false && evt.previousValue == true)
+                if (evt.previousValue != null && evt.newValue == false && evt.previousValue == true)
                 {
-                    target.ResetChildTransform();
+                    _serializedTargetObject.ResetChildTransform();
                 }
 
                 if (evt.newValue)
                 {
-                    target.ProcessFrame(debugProgress.value);
-                }
-                
-                if(evt.newValue == false)debugProgress.SetValueWithoutNotify(0);
-                debugProgress.SetEnabled(evt.newValue);
+                    _serializedTargetObject.ProcessFrame(debugProgressSlider.value);
 
-                target.DebugMode = evt.newValue;
+                } 
+                
+                if(evt.newValue == false)debugProgressSlider.SetValueWithoutNotify(0);
+                
+                
+                DebugPlayer.SetEnabled(evt.newValue);
+
+                _serializedTargetObject.DebugMode = evt.newValue;
             });
+
+
+
+            var enableInit = _serializedTargetObject.AnimationClip && _serializedTargetObject.TargetObject;
+            applyChildrenButton.SetEnabled(enableInit);
             
             
+            animationProps.SetEnabled(enableInit && _serializedTargetObject.ChildTransformCashCount > 0);
+            root.Query<Foldout>("StaggerSliderFoldout").First().value = animationProps.enabledSelf;
+            root.Query<Foldout>("TransformCalcType").First().value = animationProps.enabledSelf;
             
-            
-            
-            
-            
-            
-            return root;
+
+        return root;
         }
 
-        private void UpdateStaggerUI(List<StaggerPropsBehaviour> staggerPropsList, VisualElement root)
+        private void InitStaggerUIList()
         {
-            var staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
+            var minMaxSliderElement = Resources.Load<VisualTreeAsset>("MinMaxDurationSlider");
+            staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
+            var count = 0;
+            foreach (var staggerProps in _serializedTargetObject.StaggerPropsList)
+            {
+                if (staggerPropList.childCount <= count)
+                {
+                    var clone = minMaxSliderElement.CloneTree();
+                    SetUpStaggerElement(clone, count, staggerProps.name);
+                    staggerPropList.Add(clone);     
+                }
+                else
+                {
+                    UpdateStaggerElement(staggerPropList.Children().ElementAt(count),staggerProps);
+                }
+               
+                
+                count++;
+            }
+        }
+
+        private void UpdateStaggerListProps(List<StaggerPropsBehaviour> staggerPropsList, VisualElement root)
+        {
+            // var staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
             var count = 0;
             foreach (var child in staggerPropList.Children())
             {
                 var values = staggerPropsList[count];
                 // Debug.Log(values.startTiming);
-                child.Query<FloatField>("Start").First().value = values.startTiming;
-                child.Query<FloatField>("End").First().value = values.endTiming;
-                child.Query<FloatField>("LowLimit").First().value = values.lowLimit;
-                child.Query<FloatField>("HighLimit").First().value = values.highLimit;
-                var minMaxSlider = child.Query<MinMaxSlider>("MinMaxSlider").First();
-                
-                minMaxSlider.highLimit = values.highLimit;
-                minMaxSlider.lowLimit = values.lowLimit;
-                minMaxSlider.maxValue = values.endTiming;
-                minMaxSlider.minValue = values.startTiming;
+                UpdateStaggerElement(child, values);
                 count++;
             }
         }
 
-        private void SetUpStaggerList(VisualElement root, int index, string childName)
+        private void UpdateStaggerElement(VisualElement root, StaggerPropsBehaviour staggerProps)
+        {
+            
+            
+            // Debug.Log(values.startTiming);
+            root.Query<FloatField>("Start").First().value = staggerProps.startTiming;
+            root.Query<FloatField>("End").First().value = staggerProps.endTiming;
+            root.Query<FloatField>("LowLimit").First().value = staggerProps.lowLimit;
+            root.Query<FloatField>("HighLimit").First().value = staggerProps.highLimit;
+            var minMaxSlider = root.Query<MinMaxSlider>("MinMaxSlider").First();
+                
+            minMaxSlider.highLimit = staggerProps.highLimit;
+            minMaxSlider.lowLimit = staggerProps.lowLimit;
+            minMaxSlider.maxValue = staggerProps.endTiming;
+            minMaxSlider.minValue = staggerProps.startTiming;
+        }
+        
+
+        private void SetUpStaggerElement(VisualElement root, int index, string childName)
         {
             var target = serializedObject.targetObject as AnimationClipTransfer;
             var staggerProps = target.StaggerPropsList[index];
@@ -171,6 +239,7 @@ namespace UMotionGraphicUtilities
                 
                 
             delayField.value = staggerProps.startTiming;
+            // delayField.RegisterCallback().;
             delayField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
             {
                 
@@ -222,7 +291,6 @@ namespace UMotionGraphicUtilities
 
            
             var minMaxSlider = root.Query<MinMaxSlider>("MinMaxSlider").First();
-            Debug.Log(minMaxSlider.value);
             minMaxSlider.lowLimit = lowLimitField.value;
             minMaxSlider.highLimit = highLimitField.value;
             minMaxSlider.minValue = delayField.value;

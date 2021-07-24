@@ -1,18 +1,31 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <uie:ObjectField label="Target Object" name="TargetObject" binding-path="targetObject" style="-unity-font-style: bold;" />
     <uie:ObjectField label="Animation Clip" name="AnimationClip" binding-path="animationClip" style="-unity-font-style: bold;" />
-    <ui:Foldout text="Debug" name="DebugFoldout" value="true" style="-unity-font-style: bold;">
-        <ui:Toggle label="Debug Mode" name="DebugMode" binding-path="debugMode" style="color: rgb(74, 255, 229); -unity-font-style: normal;" />
-        <ui:Slider picking-mode="Ignore" label="Progress" value="42" high-value="1" name="DebugProgress" binding-path="debugProgress" />
-    </ui:Foldout>
-    <ui:Foldout text="Stagger Settings" name="StaggerSliderFoldout" style="cursor: initial; -unity-font-style: bold;">
-        <uie:EnumField label="StaggerType" value="Center" name="StaggerType" binding-path="staggerType" style="-unity-font-style: normal;" />
-        <ui:Slider name="StaggerRatio" picking-mode="Ignore" label="Stagger Ratio" value="0" high-value="1" binding-path="staggerRatio" style="-unity-font-style: normal;" />
-        <ui:VisualElement name="StaggerPropList" style="margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px; height: auto; align-items: stretch; justify-content: space-around;" />
-    </ui:Foldout>
-    <ui:Foldout text="Transform Calc Type" name="TransformCalcType" style="-unity-font-style: bold;">
-        <uie:EnumField label="Position" value="Center" name="PositionCalcType" binding-path="positionCalcType" />
-        <uie:EnumField label="Rotation" value="Center" name="EulerCalcType" binding-path="eulerCalcType" />
-        <uie:EnumField label="Scale" value="Center" name="ScaleCalcType" binding-path="scaleCalcType" />
-    </ui:Foldout>
+    <ui:VisualElement name="InitButton" view-data-key="InitButton" style="align-items: center; margin-top: 4px; margin-bottom: 4px;">
+        <ui:Button text="Set Transform Cash" display-tooltip-when-elided="true" name="ApplyChildrenButton" binding-path="Init" style="color: rgb(82, 219, 194); width: 60%; align-items: center; flex-direction: row-reverse; flex-wrap: wrap-reverse;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="AnimationProps" view-data-key="AnimationProps">
+        <ui:VisualElement name="TransformCash" />
+        <ui:Foldout text="Debug" name="DebugFoldout" value="true" view-data-key="DebugFoldout" style="-unity-font-style: bold;">
+            <ui:Toggle label="Debug Mode" name="DebugMode" binding-path="debugMode" style="color: rgb(74, 255, 229); -unity-font-style: normal;" />
+            <ui:VisualElement name="DebugPlayer">
+                <ui:VisualElement name="PlayerButtons" style="flex-direction: row;">
+                    <ui:VisualElement name="Duration" style="justify-content: space-between; flex-direction: row; align-items: center; margin-left: 4px; margin-right: 4px;">
+                        <ui:Slider picking-mode="Ignore" value="0" high-value="1" name="DebugProgress" binding-path="debugProgress" style="min-width: auto; width: 86%;" />
+                        <uie:FloatField value="1" binding-path="debugProgress" name="DebugDuration" style="min-width: auto; max-width: 60px; width: 10%;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:Foldout>
+        <ui:Foldout text="Transform Calc Type" name="TransformCalcType" value="false" view-data-key="TransformCalcType" style="-unity-font-style: bold;">
+            <uie:EnumField label="Position" value="Center" name="PositionCalcType" binding-path="positionCalcType" />
+            <uie:EnumField label="Rotation" value="Center" name="EulerCalcType" binding-path="eulerCalcType" />
+            <uie:EnumField label="Scale" value="true" name="ApplyChildrenButton" binding-path="scaleCalcType" />
+        </ui:Foldout>
+        <ui:Foldout text="Stagger Settings" name="StaggerSliderFoldout" value="true" view-data-key="StaggerSliderFoldout" style="cursor: initial; -unity-font-style: bold; flex-direction: column; margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;">
+            <uie:EnumField label="Stagger Type" value="Center" name="StaggerType" binding-path="staggerType" />
+            <ui:Slider picking-mode="Ignore" label="Stagger Ratio" value="42" high-value="1" binding-path="staggerRatio" name="StaggerRatio" />
+            <ui:VisualElement name="StaggerPropList" binding-path="staggerRatio" style="margin-left: 16px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;" />
+        </ui:Foldout>
+    </ui:VisualElement>
 </ui:UXML>

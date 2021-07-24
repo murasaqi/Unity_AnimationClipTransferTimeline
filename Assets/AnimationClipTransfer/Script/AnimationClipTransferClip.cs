@@ -27,13 +27,6 @@ namespace UMotionGraphicUtilities
         }
     }
 
-    // [Serializable]
-    // public class StaggerOption
-    // {
-    //     [Range(0, 1)] public float StaggerRatio = 0f;
-    //     public bool In = true;
-    //     public bool Out = true;
-    // }
 
    
     public enum StaggerType
@@ -41,7 +34,10 @@ namespace UMotionGraphicUtilities
         AutoIn,
         AutoOut,
         AutoInOut,
+        Random,
+        RandomPerlin,
         Custom
+        
     }
 
     [Serializable]
@@ -52,6 +48,7 @@ namespace UMotionGraphicUtilities
         Multiply,
         Acceleration,
         Subtract,
+        None,
     }
 
     public enum AnimationTargetType
@@ -76,8 +73,7 @@ namespace UMotionGraphicUtilities
         [SerializeField] private StaggerType _staggerType;
         [SerializeField] private TransformCash _transformCash;
         [SerializeField] private List<TransformCash> _childTransformCash;
-
-
+       
         public StaggerType StaggerType => _staggerType;
 
         public AnimationTargetType AnimationTargetType => _animationTargetType;

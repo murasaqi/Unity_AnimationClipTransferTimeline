@@ -12,8 +12,6 @@ namespace UMotionGraphicUtilities
         public GameObject TartgetObject;
         // public double Curve;
 
-        private float a = 1f;
-
         public override void OnPlayableCreate(Playable playable)
         {
             

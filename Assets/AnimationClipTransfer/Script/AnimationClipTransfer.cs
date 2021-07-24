@@ -1,8 +1,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Timers;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace UMotionGraphicUtilities
 {
@@ -25,9 +27,12 @@ namespace UMotionGraphicUtilities
         [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
         [HideInInspector] [SerializeField] private bool debugMode = false;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
-        // private float _previousProgress = 0f;
-
-
+        // [SerializeField] private float randomSeed = 123;
+        [HideInInspector] [SerializeField] private float debugDuration = 1;
+        // private Animation debugAnimation;
+        // private float _previousProgress = 0;
+        // private float _timer = 0f;
+        // [HideInInspector] public bool isDebugPlay = false;
         public bool DebugMode
         {
             get => debugMode;
@@ -46,6 +51,14 @@ namespace UMotionGraphicUtilities
             }
         }
 
+        public AnimationClip AnimationClip
+        {
+            get => animationClip;
+            set => animationClip = value;
+        }
+
+        public int ChildTransformCashCount => childTransformCash.Count;
+
         public StaggerType StaggerType
         {
             get => staggerType;
@@ -55,7 +68,9 @@ namespace UMotionGraphicUtilities
         public List<StaggerPropsBehaviour> StaggerPropsList => staggerPropsList;
 
         // Start is called before the first frame update
-        void Start() { }
+        void Start()
+        {
+        }
 
         private void OnEnable()
         {
@@ -69,10 +84,8 @@ namespace UMotionGraphicUtilities
 
         public void Init()
         {
-            Debug.Log("Init");
-            Debug.Log(targetObject);
             if (targetObject == null) return;
-            
+         
             // childTransformCash = new List<TransformCash>();
             childTransformCash.Clear();
             foreach (Transform child in targetObject.transform)
@@ -111,7 +124,6 @@ namespace UMotionGraphicUtilities
             
             foreach (Transform child in targetObject.transform)
             {
-                Debug.Log(child.name);
                 StaggerPropsBehaviour staggerPropsBehaviour;
                 if (staggerPropsList.Count <= childCount)
                 {
@@ -121,8 +133,35 @@ namespace UMotionGraphicUtilities
 
                 staggerPropsBehaviour = staggerPropsList[childCount];
                 staggerPropsBehaviour.name = $"{childCount}: {child.gameObject.name}";
+                
+                // staggerPropsBehaviour.RandomSeed = Random.Range()
                 if (staggerType != StaggerType.Custom)
-                { 
+                {
+                    
+                }
+                if (staggerType == StaggerType.Random)
+                {
+                    var childStart = Random.Range(0,staggerRatio);
+                    var childEnd = childStart + (1f - staggerRatio);
+                    
+                    staggerPropsBehaviour.lowLimit = 0;
+                    staggerPropsBehaviour.highLimit = 1;
+                    staggerPropsBehaviour.startTiming = childStart;
+                    staggerPropsBehaviour.endTiming = childEnd;
+                }
+                
+                if (staggerType == StaggerType.RandomPerlin)
+                {
+                    var childStart = Mathf.PerlinNoise(childCount*staggerRatio, staggerPropsBehaviour.RandomSeed*staggerRatio) *staggerRatio;
+                    var childEnd = childStart + (1f - staggerRatio);
+                    
+                    staggerPropsBehaviour.lowLimit = 0;
+                    staggerPropsBehaviour.highLimit = 1;
+                    staggerPropsBehaviour.startTiming = childStart;
+                    staggerPropsBehaviour.endTiming = childEnd;
+                }
+                if(staggerType != StaggerType.Random && staggerType != StaggerType.Custom && staggerType != StaggerType.RandomPerlin)
+                {
                     var isIn = (staggerType == StaggerType.AutoIn || staggerType == StaggerType.AutoInOut);
                     var isOut = staggerType == StaggerType.AutoOut || staggerType == StaggerType.AutoInOut;
                     var childStart = isIn ? ratioStep * childCount : 0;
@@ -149,16 +188,21 @@ namespace UMotionGraphicUtilities
         void Update()
         {
 
-            if (targetObject != null && targetObject != null && childTransformCash == null)
+            if (debugMode)
             {
-                Init();
+                ProcessFrame(debugProgress);
             }
-
-            // if (debugMode && _previousProgress != debugProgress)
+            // if (targetObject != null && targetObject != null && childTransformCash == null)
             // {
-            //     ProcessFrame(debugProgress);
-            //     _previousProgress = debugProgress;
+            //     Init();
             // }
+            // Debug.Log($"{_isDebugPlay},{debugProgress},{60f / 1000f / debugDuration}");
+           
+        }
+
+        private void FixedUpdate()
+        {
+           
         }
 
         public void ProcessFrame(float progress)
@@ -166,7 +210,7 @@ namespace UMotionGraphicUtilities
             if (animationClip == null || targetObject == null) return;
             if(transform.childCount == 0) return;
             ;
-            if(staggerPropsList.Count == 0 || staggerPropsList.Count != targetObject.transform.childCount) InitStaggerValues();
+            // if(staggerPropsList.Count == 0 || staggerPropsList.Count != targetObject.transform.childCount) InitStaggerValues();
 
             if(childTransformCash.Count <= 0) Init();
             // if (animationTargetType == AnimationTargetType.Own)
@@ -188,7 +232,7 @@ namespace UMotionGraphicUtilities
             // var childLength = targetObject.transform.childCount;
             var childCount = 0;
 
-            InitStaggerValues();
+            // InitStaggerValues();
             foreach (Transform child in targetObject.transform)
             {
                 // var isIn = staggerOption.In;
@@ -235,6 +279,11 @@ namespace UMotionGraphicUtilities
                 // AnimationClipはなんかGetKeyできないからTransformのどこに差分があるかを初期値と比較してるやつ
                 if (target.transform.localPosition != transformCash.LocalPosition)
                 {
+                    
+                    if (positionCalcType == ValueCalcType.None)
+                    {
+                        target.transform.localPosition = transformCash.LocalPosition;
+                    }
 
                     if (positionCalcType == ValueCalcType.Add)
                     {
@@ -262,6 +311,11 @@ namespace UMotionGraphicUtilities
 
                 if (target.transform.localEulerAngles != transformCash.LocalEulerAngle)
                 {
+                    
+                    if (eulerCalcType == ValueCalcType.None)
+                    {
+                        target.transform.localEulerAngles = transformCash.LocalEulerAngle;
+                    }
 
                     if (eulerCalcType == ValueCalcType.Add)
                     {
@@ -282,7 +336,11 @@ namespace UMotionGraphicUtilities
 
                 if (target.transform.localScale != transformCash.LocalScale)
                 {
-
+                    if (scaleCalcType == ValueCalcType.None)
+                    {
+                        target.transform.localScale = transformCash.LocalScale;
+                    }
+                    
                     if (scaleCalcType == ValueCalcType.Add)
                     {
                         target.transform.localScale += transformCash.LocalScale;
@@ -302,6 +360,24 @@ namespace UMotionGraphicUtilities
                 }
             // }
 
+        }
+        
+        // IEnumerator ChangeColor()
+        // {
+        //     //赤色にする
+        //     gameObject.GetComponent<Renderer>().material.color = Color.red;
+        //
+        //     //3秒停止
+        //     yield return new WaitForSeconds(3);
+        //
+        //     //青色にする
+        //     gameObject.GetComponent<Renderer>().material.color = Color.blue;
+        // }
+
+
+        private void OnDestroy()
+        {
+            ResetChildTransform();
         }
     }
 }

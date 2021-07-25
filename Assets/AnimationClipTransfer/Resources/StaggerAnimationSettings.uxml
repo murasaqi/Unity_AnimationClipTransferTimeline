@@ -25,7 +25,8 @@
         <ui:Foldout text="Stagger Settings" name="StaggerSliderFoldout" value="true" view-data-key="StaggerSliderFoldout" style="cursor: initial; -unity-font-style: bold; flex-direction: column; margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;">
             <uie:EnumField label="Stagger Type" value="Center" name="StaggerType" binding-path="staggerType" />
             <ui:Slider picking-mode="Ignore" label="Stagger Ratio" value="42" high-value="1" binding-path="staggerRatio" name="StaggerRatio" />
-            <ui:VisualElement name="StaggerPropList" binding-path="staggerRatio" style="margin-left: 16px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;" />
+            <uie:CurveField label="DurationCurve" binding-path="durationCurve" name="DurationCurve" />
+            <ui:VisualElement name="StaggerPropList" binding-path="durationCurve" label="Duration Curve" style="margin-left: 16px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;" />
         </ui:Foldout>
     </ui:VisualElement>
 </ui:UXML>

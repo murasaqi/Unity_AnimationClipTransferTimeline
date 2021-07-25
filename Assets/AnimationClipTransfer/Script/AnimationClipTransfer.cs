@@ -27,6 +27,7 @@ namespace UMotionGraphicUtilities
         [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
         [HideInInspector] [SerializeField] private bool debugMode = false;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
+        [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
         // [SerializeField] private float randomSeed = 123;
         [HideInInspector] [SerializeField] private float debugDuration = 1;
         // private Animation debugAnimation;
@@ -79,14 +80,21 @@ namespace UMotionGraphicUtilities
 
         private void OnValidate()
         {
+            
         }
-
-
+        
         public void Init()
         {
             if (targetObject == null) return;
          
-            // childTransformCash = new List<TransformCash>();
+            var count = 0;
+            foreach (var key in durationCurve.keys)
+            {
+                durationCurve.RemoveKey(count);
+            }
+            durationCurve.AddKey(0, 1);
+            durationCurve.AddKey(1, 1);
+
             childTransformCash.Clear();
             foreach (Transform child in targetObject.transform)
             {
@@ -118,12 +126,16 @@ namespace UMotionGraphicUtilities
             var childLength = targetObject.transform.childCount;
             var childCount = 0;
             
-            var ratio = staggerRatio;
-            if (staggerType == StaggerType.AutoInOut) ratio *= 0.5f;
-            var ratioStep = ratio / (targetObject.transform.childCount - 1);
-            
             foreach (Transform child in targetObject.transform)
             {
+                
+                var ratio = staggerRatio *durationCurve.Evaluate((float)childCount/(float)(targetObject.transform.childCount-1));
+                ratio = Mathf.Clamp(ratio,0f, 1f);
+                Debug.Log(ratio);
+                // 
+                var ratioStep = ratio / (targetObject.transform.childCount - 1);
+
+                
                 StaggerPropsBehaviour staggerPropsBehaviour;
                 if (staggerPropsList.Count <= childCount)
                 {
@@ -141,8 +153,8 @@ namespace UMotionGraphicUtilities
                 }
                 if (staggerType == StaggerType.Random)
                 {
-                    var childStart = Random.Range(0,staggerRatio);
-                    var childEnd = childStart + (1f - staggerRatio);
+                    var childStart = Random.Range(0,ratio);
+                    var childEnd = childStart + (1f - ratio);
                     
                     staggerPropsBehaviour.lowLimit = 0;
                     staggerPropsBehaviour.highLimit = 1;
@@ -152,8 +164,8 @@ namespace UMotionGraphicUtilities
                 
                 if (staggerType == StaggerType.RandomPerlin)
                 {
-                    var childStart = Mathf.PerlinNoise(childCount*staggerRatio, staggerPropsBehaviour.RandomSeed*staggerRatio) *staggerRatio;
-                    var childEnd = childStart + (1f - staggerRatio);
+                    var childStart = Mathf.PerlinNoise(childCount*ratio, staggerPropsBehaviour.RandomSeed*ratio) *ratio;
+                    var childEnd = childStart + (1f - ratio);
                     
                     staggerPropsBehaviour.lowLimit = 0;
                     staggerPropsBehaviour.highLimit = 1;
@@ -162,6 +174,7 @@ namespace UMotionGraphicUtilities
                 }
                 if(staggerType != StaggerType.Random && staggerType != StaggerType.Custom && staggerType != StaggerType.RandomPerlin)
                 {
+                    // if (staggerType == StaggerType.AutoInOut) ratioStep *= 0.5f;
                     var isIn = (staggerType == StaggerType.AutoIn || staggerType == StaggerType.AutoInOut);
                     var isOut = staggerType == StaggerType.AutoOut || staggerType == StaggerType.AutoInOut;
                     var childStart = isIn ? ratioStep * childCount : 0;

@@ -129,11 +129,12 @@ namespace UMotionGraphicUtilities
             foreach (Transform child in targetObject.transform)
             {
                 
-                var ratio = staggerRatio *durationCurve.Evaluate((float)childCount/(float)(targetObject.transform.childCount-1));
-                ratio = Mathf.Clamp(ratio,0f, 1f);
-                Debug.Log(ratio);
+                var duration = staggerRatio * durationCurve.Evaluate((float)childCount/(float)(targetObject.transform.childCount-1));
+                duration = Mathf.Clamp(duration,0f, 1f);
+                // Debug.Log(ratio);
                 // 
-                var ratioStep = ratio / (targetObject.transform.childCount - 1);
+                var delay = 1f - duration;
+                var delayStep = (1f-duration) / (targetObject.transform.childCount - 1);
 
                 
                 StaggerPropsBehaviour staggerPropsBehaviour;
@@ -153,8 +154,8 @@ namespace UMotionGraphicUtilities
                 }
                 if (staggerType == StaggerType.Random)
                 {
-                    var childStart = Random.Range(0,ratio);
-                    var childEnd = childStart + (1f - ratio);
+                    var childStart = Random.Range(0,delay);
+                    var childEnd = childStart + duration;
                     
                     staggerPropsBehaviour.lowLimit = 0;
                     staggerPropsBehaviour.highLimit = 1;
@@ -164,21 +165,21 @@ namespace UMotionGraphicUtilities
                 
                 if (staggerType == StaggerType.RandomPerlin)
                 {
-                    var childStart = Mathf.PerlinNoise(childCount*ratio, staggerPropsBehaviour.RandomSeed*ratio) *ratio;
-                    var childEnd = childStart + (1f - ratio);
+                    var childStart = Mathf.PerlinNoise(childCount*staggerRatio, staggerPropsBehaviour.RandomSeed*staggerRatio) *delay;
+                    var childEnd = childStart + duration;
                     
                     staggerPropsBehaviour.lowLimit = 0;
                     staggerPropsBehaviour.highLimit = 1;
                     staggerPropsBehaviour.startTiming = childStart;
                     staggerPropsBehaviour.endTiming = childEnd;
                 }
-                if(staggerType != StaggerType.Random && staggerType != StaggerType.Custom && staggerType != StaggerType.RandomPerlin)
+                if(staggerType == StaggerType.AutoInOut)
                 {
                     // if (staggerType == StaggerType.AutoInOut) ratioStep *= 0.5f;
-                    var isIn = (staggerType == StaggerType.AutoIn || staggerType == StaggerType.AutoInOut);
-                    var isOut = staggerType == StaggerType.AutoOut || staggerType == StaggerType.AutoInOut;
-                    var childStart = isIn ? ratioStep * childCount : 0;
-                    var childEnd = isOut ? 1f - ratioStep * (childLength - 1 - childCount) : 1;
+                    // var isIn = (staggerType == StaggerType.AutoIn || staggerType == StaggerType.AutoInOut);
+                    // var isOut = staggerType == StaggerType.AutoOut || staggerType == StaggerType.AutoInOut;
+                    var childStart = delayStep * childCount;
+                    var childEnd = childStart + duration;
                     
                     
                     staggerPropsBehaviour.lowLimit = 0;

@@ -187,6 +187,33 @@ namespace UMotionGraphicUtilities
                     staggerPropsBehaviour.startTiming = childStart;
                     staggerPropsBehaviour.endTiming = childEnd;
                 }
+                
+                if(staggerType == StaggerType.AutoIn)
+                {
+                    // if (staggerType == StaggerType.AutoInOut) ratioStep *= 0.5f;
+                    
+                    var childStart = delayStep * childCount;
+                    var childEnd =1f;
+                    
+                    
+                    staggerPropsBehaviour.lowLimit = 0;
+                    staggerPropsBehaviour.highLimit = 1;
+                    staggerPropsBehaviour.startTiming = childStart;
+                    staggerPropsBehaviour.endTiming = childEnd;
+                }
+                
+                if(staggerType == StaggerType.AutoOut)
+                {
+                    
+                    var childStart = 0;
+                    var childEnd = 1f-delayStep * childCount;
+                    
+                    
+                    staggerPropsBehaviour.lowLimit = 0;
+                    staggerPropsBehaviour.highLimit = 1;
+                    staggerPropsBehaviour.startTiming = childStart;
+                    staggerPropsBehaviour.endTiming = childEnd;
+                }
              
                 childCount++;
 

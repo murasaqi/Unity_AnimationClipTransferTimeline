@@ -160,6 +160,12 @@ namespace UMotionGraphicUtilities
                 _serializedTargetObject.DebugMode = evt.newValue;
             });
 
+            root.Query<CurveField>("DurationCurve").First().RegisterValueChangedCallback((evt) =>
+            {
+                _serializedTargetObject.InitStaggerValues();
+                InitStaggerUIList();
+            });
+
 
 
             var enableInit = _serializedTargetObject.AnimationClip && _serializedTargetObject.TargetObject;

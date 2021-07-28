@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -34,6 +35,15 @@ namespace UMotionGraphicUtilities
         // private float _previousProgress = 0;
         // private float _timer = 0f;
         // [HideInInspector] public bool isDebugPlay = false;
+        
+        
+        
+        public delegate void OnInitDelegate();
+        public event OnInitDelegate OnInitHandler; 
+        
+        public delegate void OnResetChildTransformDelegate();
+        public event OnInitDelegate OnResetChildTransformHandler; 
+        
         public bool DebugMode
         {
             get => debugMode;
@@ -87,6 +97,7 @@ namespace UMotionGraphicUtilities
         {
             if (targetObject == null) return;
          
+            OnInitHandler?.Invoke();
             var count = 0;
             foreach (var key in durationCurve.keys)
             {
@@ -118,6 +129,7 @@ namespace UMotionGraphicUtilities
             {
                 cash.ResetTransform();
             }
+            OnResetChildTransformHandler?.Invoke();
         }
 
         public void InitStaggerValues()
@@ -403,17 +415,6 @@ namespace UMotionGraphicUtilities
 
         }
         
-        // IEnumerator ChangeColor()
-        // {
-        //     //赤色にする
-        //     gameObject.GetComponent<Renderer>().material.color = Color.red;
-        //
-        //     //3秒停止
-        //     yield return new WaitForSeconds(3);
-        //
-        //     //青色にする
-        //     gameObject.GetComponent<Renderer>().material.color = Color.blue;
-        // }
 
 
         private void OnDestroy()

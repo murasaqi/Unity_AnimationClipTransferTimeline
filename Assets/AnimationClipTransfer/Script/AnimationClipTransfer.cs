@@ -26,7 +26,7 @@ namespace UMotionGraphicUtilities
         [HideInInspector] [SerializeField] private float staggerRatio = 0.3f;
         // [SerializeField] private TransformCash transformCash = null;
         [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
-        [HideInInspector] [SerializeField] private bool debugMode = false;
+        [HideInInspector] [SerializeField] private bool debugMode = true;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
         [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
         // [SerializeField] private float randomSeed = 123;
@@ -99,10 +99,7 @@ namespace UMotionGraphicUtilities
          
             OnInitHandler?.Invoke();
             var count = 0;
-            foreach (var key in durationCurve.keys)
-            {
-                durationCurve.RemoveKey(count);
-            }
+            durationCurve = new AnimationCurve();
             durationCurve.AddKey(0, 1);
             durationCurve.AddKey(1, 1);
 

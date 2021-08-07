@@ -31,10 +31,6 @@ namespace UMotionGraphicUtilities
         [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
         // [SerializeField] private float randomSeed = 123;
         [HideInInspector] [SerializeField] private float debugDuration = 1;
-        // private Animation debugAnimation;
-        // private float _previousProgress = 0;
-        // private float _timer = 0f;
-        // [HideInInspector] public bool isDebugPlay = false;
         
         
         
@@ -332,7 +328,7 @@ namespace UMotionGraphicUtilities
                     
                     if (positionCalcType == ValueCalcType.None)
                     {
-                        target.transform.localPosition = transformCash.LocalPosition;
+                        // target.transform.localPosition = transformCash.LocalPosition;
                     }
 
                     if (positionCalcType == ValueCalcType.Add)
@@ -364,7 +360,7 @@ namespace UMotionGraphicUtilities
                     
                     if (eulerCalcType == ValueCalcType.None)
                     {
-                        target.transform.localEulerAngles = transformCash.LocalEulerAngle;
+                        // target.transform.localEulerAngles = transformCash.LocalEulerAngle;
                     }
 
                     if (eulerCalcType == ValueCalcType.Add)
@@ -388,7 +384,7 @@ namespace UMotionGraphicUtilities
                 {
                     if (scaleCalcType == ValueCalcType.None)
                     {
-                        target.transform.localScale = transformCash.LocalScale;
+                        // target.transform.localScale = transformCash.LocalScale;
                     }
                     
                     if (scaleCalcType == ValueCalcType.Add)

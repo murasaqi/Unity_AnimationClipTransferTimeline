@@ -21,6 +21,8 @@ namespace UMotionGraphicUtilities
 
         public void ResetTransform()
         {
+            if(OwnTransform == null) return;
+            
             OwnTransform.localPosition = LocalPosition;
             OwnTransform.localEulerAngles = LocalEulerAngle;
             OwnTransform.localScale = LocalScale;

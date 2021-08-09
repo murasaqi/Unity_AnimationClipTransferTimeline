@@ -112,6 +112,7 @@ namespace UMotionGraphicUtilities
             }
 
             InitStaggerValues();
+            ProcessFrame(0);
 
         }
 
@@ -234,6 +235,14 @@ namespace UMotionGraphicUtilities
         void Update()
         {
 
+            if (targetObject != null)
+            {
+                if (childTransformCash.Count != targetObject.transform.childCount)
+                {
+                    Init();
+                }
+            }
+
             if (debugMode)
             {
                 ProcessFrame(debugProgress);
@@ -279,7 +288,7 @@ namespace UMotionGraphicUtilities
             var childCount = 0;
 
             // InitStaggerValues();
-            foreach (Transform child in targetObject.transform)
+            foreach (var child in childTransformCash)
             {
                 // var isIn = staggerOption.In;
                 // var isOut = staggerOption.Out;
@@ -291,13 +300,13 @@ namespace UMotionGraphicUtilities
                 // Debug.Log($"{child.name},{childProgress}");
 
                 // Debug.Log($"{child.name},{childStart},{childEnd},{childProgress}");
-                var animation = child.gameObject.GetComponent<Animation>();
-                if (animation == null)
-                {
-                    animation = child.gameObject.AddComponent<Animation>();
-                }
-                animation.clip = animationClip;
-                UpdateAnimation(childTransformCash[childCount], childProgress);
+                // var animation = child.gameObject.GetComponent<Animation>();
+                // if (animation == null)
+                // {
+                //     animation = child.gameObject.AddComponent<Animation>();
+                // }
+                // animation.clip = animationClip;
+                UpdateAnimation(child, childProgress);
 
                 childCount++;
 

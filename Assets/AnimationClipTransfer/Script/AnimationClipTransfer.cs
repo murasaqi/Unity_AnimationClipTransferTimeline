@@ -32,6 +32,7 @@ namespace UMotionGraphicUtilities
         [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
         // [SerializeField] private float randomSeed = 123;
         [HideInInspector] [SerializeField] private float debugDuration = 1;
+        [HideInInspector] private float currentProcess;
         
         
         
@@ -265,8 +266,10 @@ namespace UMotionGraphicUtilities
         //     debugProgress = value;
         // }
 
+        public float Process => currentProcess;
         public void ProcessFrame(float progress)
         {
+            currentProcess = progress;
             if (animationClip == null || targetObject == null) return;
             if(transform.childCount == 0) return;
             ;

@@ -28,6 +28,7 @@ namespace UMotionGraphicUtilities
         [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
         [HideInInspector] [SerializeField] private bool debugMode = true;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
+        [HideInInspector] private float preDebugProgress;
         [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
         // [SerializeField] private float randomSeed = 123;
         [HideInInspector] [SerializeField] private float debugDuration = 1;
@@ -77,6 +78,7 @@ namespace UMotionGraphicUtilities
         // Start is called before the first frame update
         void Start()
         {
+            
         }
 
         private void OnEnable()
@@ -91,6 +93,8 @@ namespace UMotionGraphicUtilities
         
         public void Init()
         {
+            
+            Debug.Log("Init:AnimationClipTransfer");
             if (targetObject == null) return;
          
             OnInitHandler?.Invoke();
@@ -98,7 +102,7 @@ namespace UMotionGraphicUtilities
             durationCurve = new AnimationCurve();
             durationCurve.AddKey(0, 1);
             durationCurve.AddKey(1, 1);
-
+            debugProgress = 0f;
             childTransformCash.Clear();
             foreach (Transform child in targetObject.transform)
             {
@@ -243,22 +247,23 @@ namespace UMotionGraphicUtilities
                 }
             }
 
-            if (debugMode)
+            if (debugMode && debugProgress != preDebugProgress)
             {
                 ProcessFrame(debugProgress);
+                preDebugProgress = debugProgress;
             }
-            // if (targetObject != null && targetObject != null && childTransformCash == null)
-            // {
-            //     Init();
-            // }
-            // Debug.Log($"{_isDebugPlay},{debugProgress},{60f / 1000f / debugDuration}");
-           
+          
         }
 
         private void FixedUpdate()
         {
            
         }
+
+        // public void UpdateDebugProgress(float value)
+        // {
+        //     debugProgress = value;
+        // }
 
         public void ProcessFrame(float progress)
         {

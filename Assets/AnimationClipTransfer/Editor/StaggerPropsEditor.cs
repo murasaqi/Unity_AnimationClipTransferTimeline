@@ -5,6 +5,8 @@ using UnityEngine.UIElements;
 
 namespace UMotionGraphicUtilities
 {
+#if UNITY_EDITOR
+
      
     [CustomEditor(typeof(StaggerProps), true)]
     public class StaggerPropsEditor : Editor
@@ -89,4 +91,6 @@ namespace UMotionGraphicUtilities
             return root;
         }
     }
+    
+#endif
 }

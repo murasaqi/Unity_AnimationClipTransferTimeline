@@ -9,6 +9,9 @@ using UnityEngine.UIElements;
 namespace UMotionGraphicUtilities
 {
 
+#if UNITY_EDITOR
+    
+
     [CustomEditor(typeof(AnimationClipTransfer), true)]
     
     public class AnimationClipTransferEditor : Editor
@@ -315,4 +318,6 @@ namespace UMotionGraphicUtilities
             });
         }
     }
+    
+#endif
 }

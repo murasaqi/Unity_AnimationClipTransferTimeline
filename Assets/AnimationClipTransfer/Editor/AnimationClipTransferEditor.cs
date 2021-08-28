@@ -37,10 +37,7 @@ namespace UMotionGraphicUtilities
             var visualTree = Resources.Load<VisualTreeAsset>("StaggerAnimationSettings");
             visualTree.CloneTree(root);
             
-            
-            // var prop1 = new PropertyField(serializedObject.FindProperty("childTransformCash"), "Child Transform Cash");
-            // root.Query<VisualElement>("TransformCash").First().Add(prop1);
-            //
+           
             var container = new IMGUIContainer(OnInspectorGUI);
             root.Add(container);
             

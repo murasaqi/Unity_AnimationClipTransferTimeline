@@ -15,24 +15,17 @@ namespace UMotionGraphicUtilities
 
         [HideInInspector] [SerializeField] private AnimationClip animationClip;
         [HideInInspector] [SerializeField] private GameObject targetObject;
-        // [SerializeField] private AnimationTargetType animationTargetType;
-        // [SerializeField] private bool toggleActiveOnClip;
         [HideInInspector] [SerializeField] private ValueCalcType positionCalcType = ValueCalcType.Add;
         [HideInInspector] [SerializeField] private ValueCalcType eulerCalcType = ValueCalcType.Add;
         [HideInInspector] [SerializeField] private ValueCalcType scaleCalcType = ValueCalcType.Multiply;
         [HideInInspector] [SerializeField] private StaggerType staggerType = StaggerType.AutoInOut;
         [HideInInspector] [SerializeField] private List<StaggerPropsBehaviour> staggerPropsList =new List<StaggerPropsBehaviour>();
-        // [SerializeField] private StaggerOption staggerOption;
         [HideInInspector] [SerializeField] private float staggerRatio = 0.3f;
-        // [SerializeField] private TransformCash transformCash = null;
         [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
         [HideInInspector] [SerializeField] private bool debugMode = true;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
-        [HideInInspector] private float preDebugProgress;
+        [HideInInspector] [SerializeField] [Range(0, 1)] private float progress;
         [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
-        // [SerializeField] private float randomSeed = 123;
-        [HideInInspector] [SerializeField] private float debugDuration = 1;
-        [HideInInspector] private float currentProcess;
         
         
         
@@ -103,7 +96,7 @@ namespace UMotionGraphicUtilities
             durationCurve = new AnimationCurve();
             durationCurve.AddKey(0, 1);
             durationCurve.AddKey(1, 1);
-            debugProgress = 0f;
+            progress = 0f;
             childTransformCash.Clear();
             foreach (Transform child in targetObject.transform)
             {
@@ -123,7 +116,7 @@ namespace UMotionGraphicUtilities
 
         public void ResetChildTransform()
         {
-            debugProgress = 0;
+            progress = 0;
             foreach (var cash in childTransformCash)
             {
                 cash.ResetTransform();
@@ -248,11 +241,12 @@ namespace UMotionGraphicUtilities
                 }
             }
 
-            if (debugMode && debugProgress != preDebugProgress)
+            if (debugMode && debugProgress != progress)
             {
                 ProcessFrame(debugProgress);
-                preDebugProgress = debugProgress;
             }
+            
+            
           
         }
 
@@ -260,84 +254,38 @@ namespace UMotionGraphicUtilities
         {
            
         }
-
-        // public void UpdateDebugProgress(float value)
-        // {
-        //     debugProgress = value;
-        // }
-
-        public float Process => currentProcess;
-        public void ProcessFrame(float progress)
+        
+        public float Process => progress;
+        public void ProcessFrame(float time)
         {
-            currentProcess = progress;
+            
+            progress = time;
             if (animationClip == null || targetObject == null) return;
             if(transform.childCount == 0) return;
-            ;
-            // if(staggerPropsList.Count == 0 || staggerPropsList.Count != targetObject.transform.childCount) InitStaggerValues();
-
+          
             if(childTransformCash.Count <= 0) Init();
-            // if (animationTargetType == AnimationTargetType.Own)
-            // {
-            //
-            //     var animation = targetObject.GetComponent<Animation>();
-            //     if (animation == null)
-            //     {
-            //         animation = targetObject.AddComponent<Animation>();
-            //     }
-            //     animation.clip = animationClip;
-            //     UpdateAnimation(transformCash, progress);
-            //
-            // }
-            //
-            // if (animationTargetType == AnimationTargetType.Children)
-            // {
-               
-            // var childLength = targetObject.transform.childCount;
+          
             var childCount = 0;
 
-            // InitStaggerValues();
             foreach (var child in childTransformCash)
             {
-                // var isIn = staggerOption.In;
-                // var isOut = staggerOption.Out;
-                // var childStart = isIn ? ratioStep * childCount : 0;
-                // var childEnd = isOut ? 1f - ratioStep * (childLength - 1 - childCount) : 1;
-                // Debug.Log(child.name);
-
+          
                 var childProgress = Mathf.Clamp(Mathf.InverseLerp( staggerPropsList[childCount].startTiming,  staggerPropsList[childCount].endTiming, (float) progress), 0f, 1f);
-                // Debug.Log($"{child.name},{childProgress}");
-
-                // Debug.Log($"{child.name},{childStart},{childEnd},{childProgress}");
-                // var animation = child.gameObject.GetComponent<Animation>();
-                // if (animation == null)
-                // {
-                //     animation = child.gameObject.AddComponent<Animation>();
-                // }
-                // animation.clip = animationClip;
                 UpdateAnimation(child, childProgress);
 
                 childCount++;
 
             }
-            // }
+           
         }
 
-        public void UpdateAnimation(TransformCash transformCash, float progress)
+        private void UpdateAnimation(TransformCash transformCash, float progress)
         {
             var target = transformCash.OwnTransform.gameObject;
-            // var clipAsset = clip.asset as AnimationClipTransferClip;
-            // if (toggleActiveOnClip) target.SetActive(true);
+         
 
 
-            // if (transformCash.Progress != progress)
-            // {
-
-
-
-                // Debug.Log($"Update motion");
-                // animation.clip = input.AnimationClip;
-                // animation.enabled = true;
-                animationClip.SampleAnimation(target, progress * animationClip.averageDuration);
+              animationClip.SampleAnimation(target, progress * animationClip.averageDuration);
                 transformCash.Progress = progress;
                 // AnimationClipはなんかGetKeyできないからTransformのどこに差分があるかを初期値と比較してるやつ
                 if (target.transform.localPosition != transformCash.LocalPosition)

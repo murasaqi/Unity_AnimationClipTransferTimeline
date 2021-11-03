@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Timers;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -21,14 +22,20 @@ namespace UMotionGraphicUtilities
         [HideInInspector] [SerializeField] private StaggerType staggerType = StaggerType.AutoInOut;
         [HideInInspector] [SerializeField] private List<StaggerPropsBehaviour> staggerPropsList =new List<StaggerPropsBehaviour>();
         [HideInInspector] [SerializeField] private float staggerRatio = 0.3f;
+        [SerializeField] private TransformCashList transformCashList;
         [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
         [HideInInspector] [SerializeField] private bool debugMode = true;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float progress;
         [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
-        
-        
-        
+
+
+
+        public TransformCashList TransformCashList
+
+        {
+            set => transformCashList = value;
+        }
         public delegate void OnInitDelegate();
         public event OnInitDelegate OnInitHandler; 
         
@@ -84,7 +91,20 @@ namespace UMotionGraphicUtilities
         {
             
         }
-        
+
+        public void SaveTransformCashList()
+        {
+            if (childTransformCash.Count > 0)
+            {
+                if (transformCashList.cashs == null) transformCashList.cashs = new List<TransformCash>();
+                transformCashList.cashs.Clear();
+
+                foreach (var childTransformCash in childTransformCash)
+                {
+                    transformCashList.cashs.Add(childTransformCash);
+                }
+            }
+        }
         public void Init()
         {
             

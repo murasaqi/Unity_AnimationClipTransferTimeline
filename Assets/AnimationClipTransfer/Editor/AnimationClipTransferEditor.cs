@@ -20,7 +20,7 @@ namespace UMotionGraphicUtilities
         private VisualElement staggerPropList;
         private VisualElement root;
         private VisualElement animationProps;
-        private Button applyChildrenButton;
+        private Button SetTransformCash;
         private Slider debugProgressSlider;
         private VisualElement DebugPlayer;
         private Timer timer;
@@ -43,7 +43,7 @@ namespace UMotionGraphicUtilities
             
             staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
             animationProps = root.Query<VisualElement>("AnimationProps");
-            applyChildrenButton = root.Query<Button>("ApplyChildrenButton").First();
+            SetTransformCash = root.Query<Button>("ApplyChildrenButton").First();
 
             var targetObjectField = root.Query<ObjectField>("TargetObject").First();
             targetObjectField.objectType = typeof(GameObject);
@@ -55,8 +55,18 @@ namespace UMotionGraphicUtilities
             
             // root.Query<Foldout>("StaggerSliderFoldout").First().viewDataKey = $"StaggerSliderFoldout_{true}";
             
-            applyChildrenButton.clicked += () =>
+            SetTransformCash.clicked += () =>
             {
+
+                TransformCashList asset = ScriptableObject.CreateInstance<TransformCashList>();
+
+                AssetDatabase.CreateAsset(asset, $"Assets/{_serializedTargetObject.name}_{_serializedTargetObject.GetInstanceID()}.asset");
+                AssetDatabase.SaveAssets();
+
+                EditorUtility.FocusProjectWindow();
+
+                _serializedTargetObject.TransformCashList = asset;
+                
                 _serializedTargetObject.Init();
 
                 if (_serializedTargetObject.ChildTransformCashCount > 0)
@@ -66,6 +76,8 @@ namespace UMotionGraphicUtilities
                     
                     root.Query<Foldout>("TransformCalcType").First().value = true;
                 }
+                
+                _serializedTargetObject.SaveTransformCashList();
             };
 
 
@@ -74,7 +86,7 @@ namespace UMotionGraphicUtilities
             {
                 if (evt.newValue != null)
                 {
-                    if (targetObjectField.value) applyChildrenButton.SetEnabled(true);
+                    if (targetObjectField.value) SetTransformCash.SetEnabled(true);
                     _serializedTargetObject.AnimationClip = evt.newValue as AnimationClip;
 
                 }
@@ -86,7 +98,7 @@ namespace UMotionGraphicUtilities
             {
                 if (evt.newValue != null)
                 {
-                    if(animationClipField.value)applyChildrenButton.SetEnabled(true);
+                    if(animationClipField.value)SetTransformCash.SetEnabled(true);
                     _serializedTargetObject.TargetObject = evt.newValue as GameObject;
                     // _serializedTargetObject.Init();
                     InitStaggerUIList();
@@ -169,7 +181,7 @@ namespace UMotionGraphicUtilities
 
 
             var enableInit = _serializedTargetObject.AnimationClip && _serializedTargetObject.TargetObject;
-            applyChildrenButton.SetEnabled(enableInit);
+            SetTransformCash.SetEnabled(enableInit);
             
             
             animationProps.SetEnabled(enableInit && _serializedTargetObject.ChildTransformCashCount > 0);

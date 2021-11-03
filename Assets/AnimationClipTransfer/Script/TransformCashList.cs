@@ -8,6 +8,6 @@ namespace UMotionGraphicUtilities
     [CreateAssetMenu(menuName = "AnimationClipTransfer/Create TransformCashObject")]
     public class TransformCashList : ScriptableObject
     {
-        public List<TransformCash> transformCashList;
+        public List<TransformCash> cashs;
     }
 }

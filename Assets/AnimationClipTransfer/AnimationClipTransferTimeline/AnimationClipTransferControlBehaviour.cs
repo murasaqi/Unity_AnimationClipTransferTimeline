@@ -8,7 +8,7 @@ using UMotionGraphicUtilities;
 public class AnimationClipTransferControlBehaviour : PlayableBehaviour
 {
     public AnimationClipTransfer animationClipTransfer;
-
+    public bool targetDisableOutOfClip = false;
     public override void OnPlayableCreate (Playable playable)
     {
         

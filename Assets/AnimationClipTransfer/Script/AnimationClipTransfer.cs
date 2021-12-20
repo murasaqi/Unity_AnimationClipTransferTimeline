@@ -24,13 +24,11 @@ namespace UMotionGraphicUtilities
         [HideInInspector] [SerializeField] private float staggerRatio = 0.3f;
         [SerializeField] private TransformCashList transformCashList;
         [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
-        [HideInInspector] [SerializeField] private bool debugMode = true;
+        [HideInInspector] [SerializeField] private bool debugMode = false;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float progress;
         [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
-
-
-
+        
         public TransformCashList TransformCashList
 
         {

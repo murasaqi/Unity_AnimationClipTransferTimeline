@@ -9,7 +9,7 @@ public class AnimationClipTransferControlClip : PlayableAsset, ITimelineClipAsse
 {
     public AnimationClipTransferControlBehaviour template = new AnimationClipTransferControlBehaviour ();
     public ExposedReference<AnimationClipTransfer> animationClipTransfer;
-    public bool targetDisableOutOfClip = true;
+    public bool targetDisableOutOfClip = false;
     public ClipCaps clipCaps
     {
         get { return ClipCaps.Looping | ClipCaps.Extrapolation | ClipCaps.ClipIn | ClipCaps.Blending; } 

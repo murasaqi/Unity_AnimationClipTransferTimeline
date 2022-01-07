@@ -1,5 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <uie:ObjectField label="Target Object" name="TargetObject" binding-path="targetObject" style="-unity-font-style: bold;" />
+    <uie:EnumField label="Mode" value="Center" binding-path="animationClipMode" name="AnimationClipMode" />
     <uie:ObjectField label="Animation Clip" name="AnimationClip" binding-path="animationClip" style="-unity-font-style: bold;" />
     <ui:VisualElement name="InitButton" view-data-key="InitButton" style="align-items: center; margin-top: 4px; margin-bottom: 4px;">
         <ui:Button text="Set Transform Cash" display-tooltip-when-elided="true" name="ApplyChildrenButton" binding-path="Init" style="color: rgb(82, 219, 194); width: 60%; align-items: center; flex-direction: row-reverse; flex-wrap: wrap-reverse;" />

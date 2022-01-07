@@ -1,0 +1,523 @@
+Using pre-set license
+Built from '2021.2/release' branch; Version is '2021.2.0f1 (4bf1ec4b23c9) revision 4977132'; Using compiler version '192829333'; Build Type 'Release'
+OS: 'Windows 10 Home; OS build 19042.1415; Version 2009; 64bit' Language: 'en' Physical Memory: 130992 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2021.2.0f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker1
+-projectPath
+D:/works/Unity_AnimationClipTransferTimeline
+-logFile
+Logs/AssetImportWorker1.log
+-srvPort
+51535
+Successfully changed project path to: D:/works/Unity_AnimationClipTransferTimeline
+D:/works/Unity_AnimationClipTransferTimeline
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Refreshing native plugins compatible for Editor in 128.35 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2021.2.0f1 (4bf1ec4b23c9)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2021.2.0f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path D:/works/Unity_AnimationClipTransferTimeline/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+d3d12: loaded!
+Direct3D:
+    Version:         Direct3D 12 [level 12.1]
+    Renderer:        NVIDIA GeForce RTX 3080 Ti (ID=0x2208)
+    Vendor:          NVIDIA
+    VRAM:            12108 MB
+    App VRAM Budget: 11340 MB
+    Driver:          30.0.14.9729
+d3d12: Profiler is enabled, but stable power state is not. GPU timing errors are expected.
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2021.2.0f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2021.2.0f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2021.2.0f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56272
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.2.0f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.005681 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 105.05 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.662 seconds
+Domain Reload Profiling:
+	ReloadAssembly (662ms)
+		BeginReloadAssembly (64ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (1ms)
+		EndReloadAssembly (378ms)
+			LoadAssemblies (61ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (78ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (21ms)
+			SetupLoadedEditorAssemblies (239ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (6ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (105ms)
+				BeforeProcessingInitializeOnLoad (1ms)
+				ProcessInitializeOnLoadAttributes (92ms)
+				ProcessInitializeOnLoadMethodAttributes (34ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.003645 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 102.53 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.151 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1152ms)
+		BeginReloadAssembly (114ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (4ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (16ms)
+		EndReloadAssembly (968ms)
+			LoadAssemblies (55ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (168ms)
+			ReleaseScriptCaches (1ms)
+			RebuildScriptCaches (40ms)
+			SetupLoadedEditorAssemblies (636ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (9ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (103ms)
+				BeforeProcessingInitializeOnLoad (90ms)
+				ProcessInitializeOnLoadAttributes (383ms)
+				ProcessInitializeOnLoadMethodAttributes (44ms)
+				AfterProcessingInitializeOnLoad (7ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (4ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.05 seconds
+Refreshing native plugins compatible for Editor in 1.38 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6372 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 144 unused Assets / (11.3 MB). Loaded Objects now: 6717.
+Memory consumption went from 299.3 MB to 288.0 MB.
+Total: 6.517400 ms (FindLiveObjects: 0.442800 ms CreateObjectMapping: 0.171000 ms MarkObjects: 3.947100 ms  DeleteObjects: 1.955500 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 207093.926119 seconds.
+  path: Assets/Bebas Neue.ttf
+  artifactKey: Guid(f2708476b87a66e4485a034c7c9c982f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bebas Neue.ttf using Guid(f2708476b87a66e4485a034c7c9c982f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9ec6a9827c079270973d0320f03704ab') in 0.130044 seconds 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.004720 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 82.27 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+CreateSerializedAsset is not supported while importing out-of-process
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings:Create (string,UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineGlobalSettings.cs:141)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings:MigrateFromHDRPAsset (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineGlobalSettings.Migration.cs:72)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/<>c:<.cctor>b__98_15 (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:175)
+UnityEngine.Rendering.HighDefinition.MigrationStep`2<UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/Version, UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset>:Migrate (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/Core/Migration/MigrationStep.cs:52)
+UnityEngine.Rendering.HighDefinition.MigrationDescription`2<UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/Version, UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset>:Migrate (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/Core/Migration/MigrationDescription.cs:111)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset:Migrate () (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:344)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset:OnEnable () (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:350)
+UnityEngine.Rendering.GraphicsSettings:get_defaultRenderPipeline ()
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/<>c:<.cctor>b__98_15 (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:174)
+UnityEngine.Rendering.HighDefinition.MigrationStep`2<UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/Version, UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset>:Migrate (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/Core/Migration/MigrationStep.cs:52)
+UnityEngine.Rendering.HighDefinition.MigrationDescription`2<UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/Version, UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset>:Migrate (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/Core/Migration/MigrationDescription.cs:111)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset:Migrate () (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:344)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset:OnEnable () (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:350)
+
+[C:\buildslave\unity\build\Modules\AssetDatabase\Editor\V2\AssetOperations\CreateAsset.cpp line 41]
+
+UnityException: Creating asset at path Assets/HDRPDefaultResources/HDRenderPipelineGlobalSettings 1.asset failed.
+  at (wrapper managed-to-native) UnityEditor.AssetDatabase.CreateAsset(UnityEngine.Object,string)
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings.Create (System.String path, UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings dataSource) [0x00022] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineGlobalSettings.cs:141 
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings.MigrateFromHDRPAsset (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset oldAsset) [0x0003f] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineGlobalSettings.Migration.cs:72 
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset+<>c.<.cctor>b__98_15 (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset data) [0x0000d] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:175 
+  at UnityEngine.Rendering.HighDefinition.MigrationStep`2[TVersion,TTarget].Migrate (TTarget target) [0x00028] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\Core\Migration\MigrationStep.cs:52 
+  at UnityEngine.Rendering.HighDefinition.MigrationDescription`2[TVersion,TTarget].Migrate (TTarget target) [0x0005c] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\Core\Migration\MigrationDescription.cs:111 
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset.Migrate () [0x00000] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:344 
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset.OnEnable () [0x00000] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:350 
+UnityEngine.Rendering.GraphicsSettings:get_INTERNAL_defaultRenderPipeline()
+UnityEngine.Rendering.GraphicsSettings:get_defaultRenderPipeline()
+UnityEngine.Rendering.HighDefinition.<>c:<.cctor>b__98_15(HDRenderPipelineAsset) (at Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:174)
+UnityEngine.Rendering.HighDefinition.MigrationStep`2:Migrate(HDRenderPipelineAsset) (at Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\Core\Migration\MigrationStep.cs:52)
+UnityEngine.Rendering.HighDefinition.MigrationDescription`2:Migrate(HDRenderPipelineAsset) (at Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\Core\Migration\MigrationDescription.cs:111)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset:Migrate() (at Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:344)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset:OnEnable() (at Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:350)
+
+Mono: successfully reloaded assembly
+- Completed reload, in  1.360 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1360ms)
+		BeginReloadAssembly (117ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (3ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (38ms)
+		EndReloadAssembly (1166ms)
+			LoadAssemblies (70ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (199ms)
+			ReleaseScriptCaches (1ms)
+			RebuildScriptCaches (51ms)
+			SetupLoadedEditorAssemblies (705ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (9ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (82ms)
+				BeforeProcessingInitializeOnLoad (67ms)
+				ProcessInitializeOnLoadAttributes (508ms)
+				ProcessInitializeOnLoadMethodAttributes (31ms)
+				AfterProcessingInitializeOnLoad (7ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (40ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 3.00 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6261 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 149 unused Assets / (11.3 MB). Loaded Objects now: 6803.
+Memory consumption went from 303.2 MB to 291.9 MB.
+Total: 7.543200 ms (FindLiveObjects: 0.538800 ms CreateObjectMapping: 0.378200 ms MarkObjects: 4.434400 ms  DeleteObjects: 2.190200 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:srp/default-shader: 0d000000000000000000000000000000 -> 00a0da0d000000000000000000000000
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.004195 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.28 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+CreateSerializedAsset is not supported while importing out-of-process
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings:Create (string,UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineGlobalSettings.cs:141)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings:MigrateFromHDRPAsset (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineGlobalSettings.Migration.cs:72)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/<>c:<.cctor>b__98_15 (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:175)
+UnityEngine.Rendering.HighDefinition.MigrationStep`2<UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/Version, UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset>:Migrate (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/Core/Migration/MigrationStep.cs:52)
+UnityEngine.Rendering.HighDefinition.MigrationDescription`2<UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset/Version, UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset>:Migrate (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset) (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/Core/Migration/MigrationDescription.cs:111)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset:Migrate () (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:344)
+UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset:OnEnable () (at Library/PackageCache/com.unity.render-pipelines.high-definition@12.1.0/Runtime/RenderPipeline/HDRenderPipelineAsset.Migration.cs:350)
+
+[C:\buildslave\unity\build\Modules\AssetDatabase\Editor\V2\AssetOperations\CreateAsset.cpp line 41]
+
+UnityException: Creating asset at path Assets/HDRPDefaultResources/HDRenderPipelineGlobalSettings 1.asset failed.
+  at (wrapper managed-to-native) UnityEditor.AssetDatabase.CreateAsset(UnityEngine.Object,string)
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings.Create (System.String path, UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings dataSource) [0x00022] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineGlobalSettings.cs:141 
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineGlobalSettings.MigrateFromHDRPAsset (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset oldAsset) [0x0003f] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineGlobalSettings.Migration.cs:72 
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset+<>c.<.cctor>b__98_15 (UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset data) [0x0000d] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:175 
+  at UnityEngine.Rendering.HighDefinition.MigrationStep`2[TVersion,TTarget].Migrate (TTarget target) [0x00028] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\Core\Migration\MigrationStep.cs:52 
+  at UnityEngine.Rendering.HighDefinition.MigrationDescription`2[TVersion,TTarget].Migrate (TTarget target) [0x0005c] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\Core\Migration\MigrationDescription.cs:111 
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset.Migrate () [0x00000] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:344 
+  at UnityEngine.Rendering.HighDefinition.HDRenderPipelineAsset.OnEnable () [0x00000] in D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.render-pipelines.high-definition@12.1.0\Runtime\RenderPipeline\HDRenderPipelineAsset.Migration.cs:350 
+
+Mono: successfully reloaded assembly
+- Completed reload, in  1.158 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1159ms)
+		BeginReloadAssembly (127ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (6ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (50ms)
+		EndReloadAssembly (963ms)
+			LoadAssemblies (63ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (199ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (58ms)
+			SetupLoadedEditorAssemblies (441ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (10ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (70ms)
+				ProcessInitializeOnLoadAttributes (331ms)
+				ProcessInitializeOnLoadMethodAttributes (22ms)
+				AfterProcessingInitializeOnLoad (7ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (19ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.27 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6360 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 34 unused Assets / (1.6 MB). Loaded Objects now: 7032.
+Memory consumption went from 319.0 MB to 317.4 MB.
+Total: 4.535100 ms (FindLiveObjects: 0.520700 ms CreateObjectMapping: 0.445500 ms MarkObjects: 3.187100 ms  DeleteObjects: 0.380700 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:srp/default-shader: 0d000000000000000000000000000000 -> 00a0da0d000000000000000000000000
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.004558 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.39 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.090 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1090ms)
+		BeginReloadAssembly (120ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (4ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (47ms)
+		EndReloadAssembly (905ms)
+			LoadAssemblies (66ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (208ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (52ms)
+			SetupLoadedEditorAssemblies (450ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (10ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (78ms)
+				ProcessInitializeOnLoadAttributes (331ms)
+				ProcessInitializeOnLoadMethodAttributes (22ms)
+				AfterProcessingInitializeOnLoad (7ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (10ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.22 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6148 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 45 unused Assets / (1.6 MB). Loaded Objects now: 7050.
+Memory consumption went from 312.8 MB to 311.2 MB.
+Total: 5.117300 ms (FindLiveObjects: 0.565000 ms CreateObjectMapping: 0.418300 ms MarkObjects: 3.448400 ms  DeleteObjects: 0.684500 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.004036 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.26 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.047 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1047ms)
+		BeginReloadAssembly (113ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (4ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (44ms)
+		EndReloadAssembly (867ms)
+			LoadAssemblies (60ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (197ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (53ms)
+			SetupLoadedEditorAssemblies (436ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (9ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (68ms)
+				ProcessInitializeOnLoadAttributes (328ms)
+				ProcessInitializeOnLoadMethodAttributes (22ms)
+				AfterProcessingInitializeOnLoad (7ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (14ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.45 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6146 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 34 unused Assets / (1.6 MB). Loaded Objects now: 7064.
+Memory consumption went from 312.5 MB to 310.9 MB.
+Total: 4.176100 ms (FindLiveObjects: 0.500800 ms CreateObjectMapping: 0.252300 ms MarkObjects: 3.049700 ms  DeleteObjects: 0.372300 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.003981 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image D:\works\Unity_AnimationClipTransferTimeline\Library\PackageCache\com.unity.visualscripting@1.7.2\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 1.25 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.052 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1052ms)
+		BeginReloadAssembly (113ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (6ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (41ms)
+		EndReloadAssembly (866ms)
+			LoadAssemblies (61ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (190ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (51ms)
+			SetupLoadedEditorAssemblies (447ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (9ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (70ms)
+				ProcessInitializeOnLoadAttributes (338ms)
+				ProcessInitializeOnLoadMethodAttributes (22ms)
+				AfterProcessingInitializeOnLoad (7ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (12ms)
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 1.04 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 6146 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 34 unused Assets / (1.6 MB). Loaded Objects now: 7078.
+Memory consumption went from 312.7 MB to 311.0 MB.
+Total: 6.505300 ms (FindLiveObjects: 0.634300 ms CreateObjectMapping: 0.423300 ms MarkObjects: 5.047000 ms  DeleteObjects: 0.399900 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 904.630000 seconds.
+  path: Assets/AnimationClipTransfer/Resources/MinMaxDurationSlider.uss
+  artifactKey: Guid(285f6bc5d4414cf469acadd9f1211c67) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/AnimationClipTransfer/Resources/MinMaxDurationSlider.uss using Guid(285f6bc5d4414cf469acadd9f1211c67) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f63e235f055c2ef8a84c7a59f2bd57f7') in 0.024559 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.000019 seconds.
+  path: Assets/AnimationClipTransfer/Resources/StaggerAnimationSettings.uxml
+  artifactKey: Guid(c24319d03d0d7bd4d85b3f7c949cbd7d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/AnimationClipTransfer/Resources/StaggerAnimationSettings.uxml using Guid(c24319d03d0d7bd4d85b3f7c949cbd7d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5adcdc0bbdd90ebf5b9fd0f6095eb7d1') in 0.112893 seconds 
+Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
+AssetImportWorker is now disconnected from the server
+Process exiting
+Exiting without the bug reporter. Application will terminate with return code 0

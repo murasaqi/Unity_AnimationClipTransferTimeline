@@ -2,6 +2,10 @@
     <uie:ObjectField label="Target Object" name="TargetObject" binding-path="targetObject" style="-unity-font-style: bold;" />
     <uie:EnumField label="Mode" value="Center" binding-path="animationClipMode" name="AnimationClipMode" />
     <uie:ObjectField label="Animation Clip" name="AnimationClip" binding-path="animationClip" style="-unity-font-style: bold;" />
+    <ui:Foldout text="Animation Clip List" name="AnimationClipFoldout">
+        <ui:Button text="Random Assigned" display-tooltip-when-elided="true" name="RondomAssignedButton" />
+        <ui:ListView focusable="true" binding-path="animationClips" name="AnimationClips" virtualization-method="DynamicHeight" selection-type="Multiple" show-alternating-row-backgrounds="All" show-foldout-header="true" header-title="List" reorderable="true" reorder-mode="Animated" />
+    </ui:Foldout>
     <ui:VisualElement name="InitButton" view-data-key="InitButton" style="align-items: center; margin-top: 4px; margin-bottom: 4px;">
         <ui:Button text="Set Transform Cash" display-tooltip-when-elided="true" name="ApplyChildrenButton" binding-path="Init" style="color: rgb(82, 219, 194); width: 60%; align-items: center; flex-direction: row-reverse; flex-wrap: wrap-reverse;" />
     </ui:VisualElement>
@@ -26,8 +30,8 @@
         <ui:Foldout text="Stagger Settings" name="StaggerSliderFoldout" value="true" view-data-key="StaggerSliderFoldout" style="cursor: initial; -unity-font-style: bold; flex-direction: column; margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;">
             <uie:EnumField label="Stagger Type" value="Center" name="StaggerType" binding-path="staggerType" />
             <ui:Slider picking-mode="Ignore" label="Stagger Ratio" value="42" high-value="1" binding-path="staggerRatio" name="StaggerRatio" />
-            <uie:CurveField label="DurationCurve" binding-path="durationCurve" name="DurationCurve" />
-            <ui:VisualElement name="StaggerPropList" binding-path="durationCurve" label="Duration Curve" style="margin-left: 16px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;" />
+            <uie:CurveField label="DurationCurve" binding-path="durationCurve" name="AssignedButton" />
+            <ui:VisualElement name="StaggerPropList" binding-path="animationClips" label="Duration Curve" style="margin-left: 16px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;" />
         </ui:Foldout>
     </ui:VisualElement>
 </ui:UXML>

@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <ui:Label text="name" display-tooltip-when-elided="true" name="Name" style="margin-top: 1px; margin-left: 0; margin-right: 0; margin-bottom: 1px; -unity-font-style: italic; color: rgb(194, 157, 238);" />
     <ui:VisualElement style="padding-left: 20px;">
-        <uie:ObjectField label="Animation Clip" binding-path="animationClip" name="AnimationClipField" style="margin-top: 2px; margin-bottom: 2px;" />
+        <uie:ObjectField label="Animation Clip" binding-path="assignedAnimationClip" name="AnimationClipField" style="margin-top: 2px; margin-bottom: 2px;" />
         <ui:MinMaxSlider min-value="0.3" max-value="0.7" low-limit="0" high-limit="1" name="MinMaxSlider" style="flex-direction: row; align-items: center; margin-top: 4px;" />
         <ui:Foldout text="Values" focusable="false" value="false" name="ValuesFoldout" style="-unity-font-style: normal; font-size: 12px;">
             <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: nowrap;">

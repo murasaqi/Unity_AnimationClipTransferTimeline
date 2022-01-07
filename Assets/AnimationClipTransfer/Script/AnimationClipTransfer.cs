@@ -15,6 +15,8 @@ namespace UMotionGraphicUtilities
     {
 
         [HideInInspector] [SerializeField] private AnimationClip animationClip;
+        [HideInInspector] [SerializeField] private AnimationClipMode animationClipMode = AnimationClipMode.Single;
+        [SerializeField] private List<AnimationClip> animationClips = new List<AnimationClip>();
         [HideInInspector] [SerializeField] private GameObject targetObject;
         [HideInInspector] [SerializeField] private ValueCalcType positionCalcType = ValueCalcType.Add;
         [HideInInspector] [SerializeField] private ValueCalcType eulerCalcType = ValueCalcType.Add;
@@ -28,7 +30,12 @@ namespace UMotionGraphicUtilities
         [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
         [HideInInspector] [SerializeField] [Range(0, 1)] private float progress;
         [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
-        
+
+
+        public AnimationClipMode AnimationClipMode
+        {
+            get => animationClipMode;
+        }
         public TransformCashList TransformCashList
 
         {
@@ -63,6 +70,8 @@ namespace UMotionGraphicUtilities
             get => animationClip;
             set => animationClip = value;
         }
+        
+        
 
         public int ChildTransformCashCount => childTransformCash.Count;
 
@@ -147,7 +156,11 @@ namespace UMotionGraphicUtilities
             if(targetObject == null) return;
             var childLength = targetObject.transform.childCount;
             var childCount = 0;
-            
+            if (animationClips.Count == 0)
+            {
+                animationClips = new List<AnimationClip>();
+                animationClips.Add(animationClip);
+            }
             foreach (Transform child in targetObject.transform)
             {
                 
@@ -168,7 +181,16 @@ namespace UMotionGraphicUtilities
 
                 staggerPropsBehaviour = staggerPropsList[childCount];
                 staggerPropsBehaviour.name = $"{childCount}: {child.gameObject.name}";
-                
+
+
+                if (animationClipMode == AnimationClipMode.Single)
+                {
+                    staggerPropsBehaviour.assignedAnimationClip = animationClip;
+                }
+                if (animationClipMode == AnimationClipMode.Random)
+                {
+                    staggerPropsBehaviour.assignedAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+                }
                 // staggerPropsBehaviour.RandomSeed = Random.Range()
                 if (staggerType != StaggerType.Custom)
                 {

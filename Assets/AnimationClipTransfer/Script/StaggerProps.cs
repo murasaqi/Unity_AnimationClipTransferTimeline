@@ -14,7 +14,7 @@ namespace UMotionGraphicUtilities
         public string name;
         [Range(0,1) ]  public float startTiming = 0.3f;
         [Range(0,1) ]public float endTiming = 0.7f;
-
+        public AnimationClip assignedAnimationClip;
         public float lowLimit = 0;
         public float highLimit = 2;
 

@@ -52,6 +52,7 @@ namespace UMotionGraphicUtilities
 
             root.Query<Label>("Title").First().text = target.gameObject.name;
             
+            root.Query<ObjectField>("AnimationClipField").First().objectType = typeof(AnimationClip);
             root.Query<FloatField>("LowLimit").First().RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
             {
                 

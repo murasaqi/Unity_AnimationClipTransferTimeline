@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
@@ -52,8 +53,26 @@ namespace UMotionGraphicUtilities
 
             targetObjectField.value = _serializedTargetObject.TargetObject;
             animationClipField.value = _serializedTargetObject.AnimationClip;
+            var animationClipListField = root.Query<ListView>("AnimationClips").First();
+            // animationClipListField.value = _serializedTargetObject.animatioclips;
+            var modeField = root.Query<EnumField>("AnimationClipMode").First();
             
-            // root.Query<Foldout>("StaggerSliderFoldout").First().viewDataKey = $"StaggerSliderFoldout_{true}";
+            // var animationClipFoldout = root.Query<Foldout>("AnimationClipFoldout").First();
+            animationClipField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Single);
+            animationClipListField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random);
+            // root.Query<Foldout>("AnimationClipFoldout").First().value =_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random;
+            // animationClipFoldout.visible =_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random;
+
+           
+            modeField.RegisterValueChangedCallback((evt) =>
+            {
+                animationClipField.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Single);
+                animationClipListField.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Random);
+                // animationClipFoldout.visible = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
+                // animationClipFoldout.value = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
+
+            });
+           
             
             SetTransformCash.clicked += () =>
             {
@@ -228,6 +247,11 @@ namespace UMotionGraphicUtilities
             }
         }
 
+        // private void OnChangeMode()
+        // {
+        //     
+        // }
+
         private void UpdateStaggerElement(VisualElement root, StaggerPropsBehaviour staggerProps)
         {
             
@@ -238,6 +262,7 @@ namespace UMotionGraphicUtilities
             root.Query<FloatField>("LowLimit").First().value = staggerProps.lowLimit;
             root.Query<FloatField>("HighLimit").First().value = staggerProps.highLimit;
             var minMaxSlider = root.Query<MinMaxSlider>("MinMaxSlider").First();
+            root.Query<ObjectField>("AnimationClipField").First().value = staggerProps.assignedAnimationClip;
                 
             minMaxSlider.highLimit = staggerProps.highLimit;
             minMaxSlider.lowLimit = staggerProps.lowLimit;

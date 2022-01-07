@@ -59,6 +59,11 @@ namespace UMotionGraphicUtilities
         Children
     }
 
+    public enum AnimationClipMode
+    {
+        Single,
+        Random
+    }
     [Serializable]
     public class AnimationClipTransferClip : PlayableAsset, ITimelineClipAsset
     {

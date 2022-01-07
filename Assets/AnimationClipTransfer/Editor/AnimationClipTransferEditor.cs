@@ -57,9 +57,9 @@ namespace UMotionGraphicUtilities
             // animationClipListField.value = _serializedTargetObject.animatioclips;
             var modeField = root.Query<EnumField>("AnimationClipMode").First();
             
-            // var animationClipFoldout = root.Query<Foldout>("AnimationClipFoldout").First();
+            var animationClipFoldout = root.Query<Foldout>("AnimationClipFoldout").First();
             animationClipField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Single);
-            animationClipListField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random);
+            animationClipFoldout.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random);
             // root.Query<Foldout>("AnimationClipFoldout").First().value =_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random;
             // animationClipFoldout.visible =_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random;
 
@@ -67,12 +67,21 @@ namespace UMotionGraphicUtilities
             modeField.RegisterValueChangedCallback((evt) =>
             {
                 animationClipField.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Single);
-                animationClipListField.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Random);
+                animationClipFoldout.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Random);
+                _serializedTargetObject.AnimationClipMode = (AnimationClipMode) modeField.value;
                 // animationClipFoldout.visible = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
-                // animationClipFoldout.value = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
+                animationClipFoldout.value = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
 
             });
-           
+
+
+            var assignButton = root.Query<Button>("RandomAssignedButton").First();
+
+            assignButton.clicked += () =>
+            {
+                _serializedTargetObject.RandomAssignAnimationClip();
+                InitStaggerUIList();
+            };
             
             SetTransformCash.clicked += () =>
             {

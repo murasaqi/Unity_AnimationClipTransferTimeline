@@ -3,8 +3,8 @@
     <uie:EnumField label="Mode" value="Center" binding-path="animationClipMode" name="AnimationClipMode" />
     <uie:ObjectField label="Animation Clip" name="AnimationClip" binding-path="animationClip" style="-unity-font-style: bold;" />
     <ui:Foldout text="Animation Clip List" name="AnimationClipFoldout">
-        <ui:Button text="Random Assigned" display-tooltip-when-elided="true" name="RondomAssignedButton" />
-        <ui:ListView focusable="true" binding-path="animationClips" name="AnimationClips" virtualization-method="DynamicHeight" selection-type="Multiple" show-alternating-row-backgrounds="All" show-foldout-header="true" header-title="List" reorderable="true" reorder-mode="Animated" />
+        <ui:ListView focusable="true" binding-path="animationClips" name="AnimationClips" virtualization-method="DynamicHeight" selection-type="Multiple" show-alternating-row-backgrounds="All" show-foldout-header="true" header-title="List" reorderable="true" reorder-mode="Animated" show-border="true" show-add-remove-footer="true" horizontal-scrolling="true" />
+        <ui:Button text="Random Assign" display-tooltip-when-elided="true" name="RandomAssignedButton" />
     </ui:Foldout>
     <ui:VisualElement name="InitButton" view-data-key="InitButton" style="align-items: center; margin-top: 4px; margin-bottom: 4px;">
         <ui:Button text="Set Transform Cash" display-tooltip-when-elided="true" name="ApplyChildrenButton" binding-path="Init" style="color: rgb(82, 219, 194); width: 60%; align-items: center; flex-direction: row-reverse; flex-wrap: wrap-reverse;" />
@@ -34,4 +34,5 @@
             <ui:VisualElement name="StaggerPropList" binding-path="animationClips" label="Duration Curve" style="margin-left: 16px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;" />
         </ui:Foldout>
     </ui:VisualElement>
+    <ui:Button text="Assign" display-tooltip-when-elided="true" name="RondomAssignedButton" />
 </ui:UXML>

@@ -35,6 +35,10 @@ namespace UMotionGraphicUtilities
         public AnimationClipMode AnimationClipMode
         {
             get => animationClipMode;
+            set
+            {
+                animationClipMode = value;
+            }
         }
         public TransformCashList TransformCashList
 
@@ -149,6 +153,15 @@ namespace UMotionGraphicUtilities
                 cash.ResetTransform();
             }
             OnResetChildTransformHandler?.Invoke();
+        }
+
+        public void RandomAssignAnimationClip()
+        {
+
+            foreach (var staggerProps in staggerPropsList)
+            {
+                staggerProps.assignedAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+            }
         }
 
         public void InitStaggerValues()
@@ -311,7 +324,7 @@ namespace UMotionGraphicUtilities
             {
           
                 var childProgress = Mathf.Clamp(Mathf.InverseLerp( staggerPropsList[childCount].startTiming,  staggerPropsList[childCount].endTiming, (float) progress), 0f, 1f);
-                UpdateAnimation(child, childProgress);
+                UpdateAnimation(child, childProgress, childCount);
 
                 childCount++;
 
@@ -319,13 +332,21 @@ namespace UMotionGraphicUtilities
            
         }
 
-        private void UpdateAnimation(TransformCash transformCash, float progress)
+        private void UpdateAnimation(TransformCash transformCash, float progress, int index)
         {
             var target = transformCash.OwnTransform.gameObject;
-         
 
 
-              animationClip.SampleAnimation(target, progress * animationClip.averageDuration);
+
+            if (animationClipMode == AnimationClipMode.Single)
+            {
+                animationClip.SampleAnimation(target, progress * animationClip.averageDuration);
+            }
+            
+            if (animationClipMode == AnimationClipMode.Random)
+            {
+                staggerPropsList[index].assignedAnimationClip.SampleAnimation(target, progress * animationClip.averageDuration);
+            }
                 transformCash.Progress = progress;
                 // AnimationClipはなんかGetKeyできないからTransformのどこに差分があるかを初期値と比較してるやつ
                 if (target.transform.localPosition != transformCash.LocalPosition)

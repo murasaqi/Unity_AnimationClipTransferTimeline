@@ -57,7 +57,21 @@ public class AnimationClipTransferControlMixerBehaviour : PlayableBehaviour
             }
             else
             {
-                if(clip.preExtrapolationMode == TimelineClip.ClipExtrapolation.None)input.animationClipTransfer.gameObject.SetActive(!input.targetDisableOutOfClip);
+                if (clip.preExtrapolationMode == TimelineClip.ClipExtrapolation.None)
+                {
+                    input.animationClipTransfer.gameObject.SetActive(!input.targetDisableOutOfClip);
+                    
+                    if(input.animationClipTransfer.Process > 0) input.animationClipTransfer.ProcessFrame(0);
+                }
+
+                if (clip.postExtrapolationMode == TimelineClip.ClipExtrapolation.None)
+                {
+                    if(input.animationClipTransfer.Process < 1) input.animationClipTransfer.ProcessFrame(1);
+                }
+                
+                
+                
+                
             }
 
             // if (input.targetDisableOutOfClip)

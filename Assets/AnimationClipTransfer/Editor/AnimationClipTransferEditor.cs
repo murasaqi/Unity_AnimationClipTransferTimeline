@@ -233,7 +233,25 @@ namespace UMotionGraphicUtilities
                 if (staggerPropList.childCount <= count)
                 {
                     var clone = minMaxSliderElement.CloneTree();
-                    clone.Query<ObjectField>("AnimationClipField").First().objectType = typeof(AnimationClip);
+                    var animationClipField = clone.Query<ObjectField>("AnimationClipField").First();
+                    animationClipField.objectType = typeof(AnimationClip);
+                    animationClipField.RegisterValueChangedCallback((evt =>
+                    {
+                        if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual)
+                        {
+                            staggerProps.assignedManualAnimationClip = (AnimationClip) animationClipField.value;
+                        }
+                        if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random)
+                        {
+                            staggerProps.assignedRandomAnimationClip = (AnimationClip) animationClipField.value;
+                        }
+                        
+                        if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual)
+                        {
+                            staggerProps.assignedSingleAnimationClip = (AnimationClip) animationClipField.value;
+                        }
+
+                    }));
                     SetUpStaggerElement(clone, count, staggerProps.name);
                     staggerPropList.Add(clone);     
                 }

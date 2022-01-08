@@ -6,7 +6,7 @@
     <uie:EnumField label="Mode" value="Center" binding-path="animationClipMode" name="AnimationClipMode" />
     <uie:ObjectField label="Animation Clip" name="AnimationClip" binding-path="animationClip" allow-scene-objects="false" style="-unity-font-style: bold;" />
     <ui:Foldout text="Animation Clip List" name="AnimationClipFoldout">
-        <ui:ListView focusable="true" binding-path="animationClips" name="AnimationClips" virtualization-method="DynamicHeight" selection-type="Multiple" show-alternating-row-backgrounds="All" show-foldout-header="true" header-title="List" reorderable="true" reorder-mode="Animated" show-border="true" show-add-remove-footer="true" horizontal-scrolling="true" />
+        <ui:ListView focusable="true" binding-path="animationClips" name="AnimationClips" virtualization-method="DynamicHeight" selection-type="Multiple" show-alternating-row-backgrounds="All" show-foldout-header="true" header-title="List" reorderable="true" reorder-mode="Simple" show-border="true" show-add-remove-footer="true" horizontal-scrolling="true" usage-hints="DynamicTransform" />
         <ui:VisualElement style="align-items: center; width: 100%;">
             <ui:Button text="Random Assign" display-tooltip-when-elided="true" name="RandomAssignedButton" style="max-width: 300px; align-items: center; width: 100%;" />
         </ui:VisualElement>

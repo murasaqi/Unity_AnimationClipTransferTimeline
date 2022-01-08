@@ -9,7 +9,9 @@ public class AnimationClipTransferControlClip : PlayableAsset, ITimelineClipAsse
 {
     public AnimationClipTransferControlBehaviour template = new AnimationClipTransferControlBehaviour ();
     public ExposedReference<AnimationClipTransfer> animationClipTransfer;
-    public bool targetDisableOutOfClip = false;
+    public bool disableTargetOutOfClip_pre = false;
+    public bool disableTargetOutOfClip_post = false;
+   
     public ClipCaps clipCaps
     {
         get { return ClipCaps.Looping | ClipCaps.Extrapolation | ClipCaps.ClipIn | ClipCaps.Blending; } 
@@ -21,7 +23,8 @@ public class AnimationClipTransferControlClip : PlayableAsset, ITimelineClipAsse
         var playable = ScriptPlayable<AnimationClipTransferControlBehaviour>.Create (graph, template);
         AnimationClipTransferControlBehaviour clone = playable.GetBehaviour ();
         clone.animationClipTransfer = animationClipTransfer.Resolve (graph.GetResolver ());
-        clone.targetDisableOutOfClip = targetDisableOutOfClip;
+        clone.DisableTargetOutOfClip_pre = disableTargetOutOfClip_pre;
+        clone.DisableTargetOutOfClip_post = disableTargetOutOfClip_post;
         return playable;
     }
 }

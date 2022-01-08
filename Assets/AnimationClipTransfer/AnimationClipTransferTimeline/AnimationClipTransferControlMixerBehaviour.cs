@@ -59,13 +59,14 @@ public class AnimationClipTransferControlMixerBehaviour : PlayableBehaviour
             {
                 if (clip.preExtrapolationMode == TimelineClip.ClipExtrapolation.None)
                 {
-                    input.animationClipTransfer.gameObject.SetActive(!input.targetDisableOutOfClip);
+                    input.animationClipTransfer.gameObject.SetActive(!input.DisableTargetOutOfClip_pre);
                     
                     if(input.animationClipTransfer.Process > 0) input.animationClipTransfer.ProcessFrame(0);
                 }
 
                 if (clip.postExtrapolationMode == TimelineClip.ClipExtrapolation.None)
                 {
+                    input.animationClipTransfer.gameObject.SetActive(!input.DisableTargetOutOfClip_post);
                     if(input.animationClipTransfer.Process < 1) input.animationClipTransfer.ProcessFrame(1);
                 }
                 

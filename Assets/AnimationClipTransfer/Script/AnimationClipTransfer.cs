@@ -155,14 +155,45 @@ namespace UMotionGraphicUtilities
             OnResetChildTransformHandler?.Invoke();
         }
 
-        public void RandomAssignAnimationClip()
+        public void CheckAssignAnimationClip()
         {
-
             foreach (var staggerProps in staggerPropsList)
             {
-                staggerProps.assignedAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+                if (animationClipMode == AnimationClipMode.Manual && staggerProps.assignedManualAnimationClip == null)
+                    staggerProps.assignedManualAnimationClip = animationClip;
+                
+                // if (animationClipMode == AnimationClipMode.Random && staggerProps.assignedRandomAnimationClip == null)
+                //     staggerProps.assignedRandomAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+
             }
         }
+
+        public void AssignRandomAnimationClip()
+        {
+
+            if (animationClipMode == AnimationClipMode.Random)
+            {
+                foreach (var staggerProps in staggerPropsList)
+                {
+                    staggerProps.assignedRandomAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+                }
+            }
+            
+        }
+
+        public void AssignSingleAnimationClip()
+        {
+            if (animationClipMode == AnimationClipMode.Single)
+            {
+                foreach (var staggerProps in staggerPropsList)
+                {
+                    staggerProps.assignedSingleAnimationClip= animationClip;
+                }
+            }
+
+        }
+        
+        
 
         public void InitStaggerValues()
         {
@@ -198,11 +229,16 @@ namespace UMotionGraphicUtilities
 
                 if (animationClipMode == AnimationClipMode.Single)
                 {
-                    staggerPropsBehaviour.assignedAnimationClip = animationClip;
+                    staggerPropsBehaviour.assignedSingleAnimationClip = animationClip;
                 }
                 if (animationClipMode == AnimationClipMode.Random)
                 {
-                    staggerPropsBehaviour.assignedAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+                    staggerPropsBehaviour.assignedRandomAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+                }
+                if (animationClipMode == AnimationClipMode.Manual)
+                {
+                    
+                    if(staggerPropsBehaviour.assignedManualAnimationClip)staggerPropsBehaviour.assignedRandomAnimationClip = animationClip;
                 }
                 // staggerPropsBehaviour.RandomSeed = Random.Range()
                 if (staggerType != StaggerType.Custom)
@@ -335,19 +371,8 @@ namespace UMotionGraphicUtilities
         private void UpdateAnimation(TransformCash transformCash, float progress, int index)
         {
             var target = transformCash.OwnTransform.gameObject;
-
-
-
-            if (animationClipMode == AnimationClipMode.Single)
-            {
-                animationClip.SampleAnimation(target, progress * animationClip.averageDuration);
-            }
-            
-            if (animationClipMode == AnimationClipMode.Random)
-            {
-                staggerPropsList[index].assignedAnimationClip.SampleAnimation(target, progress * animationClip.averageDuration);
-            }
-                transformCash.Progress = progress;
+            staggerPropsList[index].PickAnimationClipByMode(animationClipMode).SampleAnimation(target, progress * animationClip.averageDuration);
+            transformCash.Progress = progress;
                 // AnimationClipはなんかGetKeyできないからTransformのどこに差分があるかを初期値と比較してるやつ
                 if (target.transform.localPosition != transformCash.LocalPosition)
                 {

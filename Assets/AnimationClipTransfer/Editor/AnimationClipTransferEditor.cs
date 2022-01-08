@@ -72,6 +72,16 @@ namespace UMotionGraphicUtilities
                 // animationClipFoldout.visible = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
                 animationClipFoldout.value = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
 
+                if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Single)
+                {
+                    _serializedTargetObject.AssignSingleAnimationClip();
+                }
+
+                if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual)
+                {
+                    _serializedTargetObject.CheckAssignAnimationClip();
+                }
+                InitStaggerUIList();
             });
 
 
@@ -79,7 +89,7 @@ namespace UMotionGraphicUtilities
 
             assignButton.clicked += () =>
             {
-                _serializedTargetObject.RandomAssignAnimationClip();
+                _serializedTargetObject.AssignRandomAnimationClip();
                 InitStaggerUIList();
             };
             
@@ -271,7 +281,9 @@ namespace UMotionGraphicUtilities
             root.Query<FloatField>("LowLimit").First().value = staggerProps.lowLimit;
             root.Query<FloatField>("HighLimit").First().value = staggerProps.highLimit;
             var minMaxSlider = root.Query<MinMaxSlider>("MinMaxSlider").First();
-            root.Query<ObjectField>("AnimationClipField").First().value = staggerProps.assignedAnimationClip;
+            var animationClipField = root.Query<ObjectField>("AnimationClipField").First();
+            animationClipField.value = staggerProps.PickAnimationClipByMode(_serializedTargetObject.AnimationClipMode);
+            animationClipField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual);
                 
             minMaxSlider.highLimit = staggerProps.highLimit;
             minMaxSlider.lowLimit = staggerProps.lowLimit;

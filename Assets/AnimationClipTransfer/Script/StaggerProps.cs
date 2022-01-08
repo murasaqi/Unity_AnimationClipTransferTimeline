@@ -14,11 +14,29 @@ namespace UMotionGraphicUtilities
         public string name;
         [Range(0,1) ]  public float startTiming = 0.3f;
         [Range(0,1) ]public float endTiming = 0.7f;
-        public AnimationClip assignedAnimationClip;
+        public AnimationClip assignedSingleAnimationClip;
+        public AnimationClip assignedRandomAnimationClip;
+        public AnimationClip assignedManualAnimationClip;
         public float lowLimit = 0;
         public float highLimit = 2;
 
         public float RandomSeed = 0;
+
+        public AnimationClip PickAnimationClipByMode(AnimationClipMode mode)
+        {
+            if (mode == AnimationClipMode.Single)
+            {
+                return assignedSingleAnimationClip;
+            }else
+            if (mode == AnimationClipMode.Random)
+            {
+                return assignedRandomAnimationClip;
+            }
+            else
+            {
+                return assignedManualAnimationClip;
+            }
+        }
 
     }
     

@@ -165,16 +165,20 @@ namespace UMotionGraphicUtilities
                     animationClips.Add(animationClip);
                 }
             }
-            foreach (var staggerProps in staggerPropsList)
+            else
             {
-                if (animationClipMode == AnimationClipMode.Manual && staggerProps.assignedManualAnimationClip == null)
-                    staggerProps.assignedManualAnimationClip = animationClip;
-                if (animationClipMode == AnimationClipMode.Single && staggerProps.assignedSingleAnimationClip == null)
-                    staggerProps.assignedSingleAnimationClip = animationClip;
-                if (animationClipMode == AnimationClipMode.Random && staggerProps.assignedRandomAnimationClip == null)
-                    staggerProps.assignedRandomAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
-
+                foreach (var staggerProps in staggerPropsList)
+                {
+                    if (animationClipMode == AnimationClipMode.Manual && staggerProps.assignedManualAnimationClip == null)
+                        staggerProps.assignedManualAnimationClip = animationClip;
+                    if (animationClipMode == AnimationClipMode.Single && staggerProps.assignedSingleAnimationClip == null)
+                        staggerProps.assignedSingleAnimationClip = animationClip;
+                    if (animationClipMode == AnimationClipMode.Random && staggerProps.assignedRandomAnimationClip == null)
+                        staggerProps.assignedRandomAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+    
+                }
             }
+          
         }
 
         public void AssignRandomAnimationClip()

@@ -233,6 +233,7 @@ namespace UMotionGraphicUtilities
                 if (staggerPropList.childCount <= count)
                 {
                     var clone = minMaxSliderElement.CloneTree();
+                    clone.Query<ObjectField>("AnimationClipField").First().objectType = typeof(AnimationClip);
                     SetUpStaggerElement(clone, count, staggerProps.name);
                     staggerPropList.Add(clone);     
                 }

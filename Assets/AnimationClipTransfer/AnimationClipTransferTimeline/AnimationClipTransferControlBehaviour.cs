@@ -9,6 +9,8 @@ public class AnimationClipTransferControlBehaviour : PlayableBehaviour
 {
     public AnimationClipTransfer animationClipTransfer;
     public bool targetDisableOutOfClip = false;
+
+    public bool reverse;
     // public bool DisableTargetOutOfClip_post = false;
     public override void OnPlayableCreate (Playable playable)
     {

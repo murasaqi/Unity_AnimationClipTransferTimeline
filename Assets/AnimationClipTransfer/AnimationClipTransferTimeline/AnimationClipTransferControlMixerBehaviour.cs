@@ -53,7 +53,7 @@ public class AnimationClipTransferControlMixerBehaviour : PlayableBehaviour
             if (inputWeight > 0)
             {
                 input.animationClipTransfer.gameObject.SetActive(true);
-                animationClipTransfer.ProcessFrame(normalisedTime);    
+                animationClipTransfer.ProcessFrame(input.reverse ? 1f- normalisedTime : normalisedTime);    
             }
             else
             {

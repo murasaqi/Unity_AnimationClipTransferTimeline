@@ -10,6 +10,8 @@ public class AnimationClipTransferControlClip : PlayableAsset, ITimelineClipAsse
     public AnimationClipTransferControlBehaviour template = new AnimationClipTransferControlBehaviour ();
     public ExposedReference<AnimationClipTransfer> animationClipTransfer;
     public bool targetDisableOutOfClip = false;
+
+    public bool reverse;
     // public bool disableTargetOutOfClip_post = false;
    
     public ClipCaps clipCaps
@@ -24,6 +26,7 @@ public class AnimationClipTransferControlClip : PlayableAsset, ITimelineClipAsse
         AnimationClipTransferControlBehaviour clone = playable.GetBehaviour ();
         clone.animationClipTransfer = animationClipTransfer.Resolve (graph.GetResolver ());
         clone.targetDisableOutOfClip = targetDisableOutOfClip;
+        clone.reverse = reverse;
         // clone.DisableTargetOutOfClip_post = disableTargetOutOfClip_post;
         return playable;
     }

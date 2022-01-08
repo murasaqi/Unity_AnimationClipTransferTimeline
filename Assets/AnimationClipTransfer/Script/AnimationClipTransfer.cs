@@ -157,20 +157,33 @@ namespace UMotionGraphicUtilities
 
         public void CheckAssignAnimationClip()
         {
+            if (animationClipMode == AnimationClipMode.Random)
+            {
+                if (animationClips == null || animationClips.Count == 0)
+                {
+                    animationClips = new List<AnimationClip>();
+                    animationClips.Add(animationClip);
+                }
+            }
             foreach (var staggerProps in staggerPropsList)
             {
                 if (animationClipMode == AnimationClipMode.Manual && staggerProps.assignedManualAnimationClip == null)
                     staggerProps.assignedManualAnimationClip = animationClip;
-                
-                // if (animationClipMode == AnimationClipMode.Random && staggerProps.assignedRandomAnimationClip == null)
-                //     staggerProps.assignedRandomAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
+                if (animationClipMode == AnimationClipMode.Single && staggerProps.assignedSingleAnimationClip == null)
+                    staggerProps.assignedSingleAnimationClip = animationClip;
+                if (animationClipMode == AnimationClipMode.Random && staggerProps.assignedRandomAnimationClip == null)
+                    staggerProps.assignedRandomAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
 
             }
         }
 
         public void AssignRandomAnimationClip()
         {
-
+            if (animationClips == null || animationClips.Count == 0)
+            {
+                animationClips = new List<AnimationClip>();
+                animationClips.Add(animationClip);
+            }
             if (animationClipMode == AnimationClipMode.Random)
             {
                 foreach (var staggerProps in staggerPropsList)
@@ -240,10 +253,15 @@ namespace UMotionGraphicUtilities
                     
                     if(staggerPropsBehaviour.assignedManualAnimationClip)staggerPropsBehaviour.assignedRandomAnimationClip = animationClip;
                 }
+
+                staggerPropsBehaviour.currentStaggerType = staggerType;
                 // staggerPropsBehaviour.RandomSeed = Random.Range()
                 if (staggerType != StaggerType.Custom)
                 {
-                    
+                    staggerPropsBehaviour.lowLimit = 0;
+                    staggerPropsBehaviour.highLimit = 1;
+                    staggerPropsBehaviour.startTiming = staggerPropsBehaviour.startTimingCustom;
+                    staggerPropsBehaviour.endTiming = staggerPropsBehaviour.endTimingCustom;
                 }
                 if (staggerType == StaggerType.Random)
                 {
@@ -355,11 +373,26 @@ namespace UMotionGraphicUtilities
             if(childTransformCash.Count <= 0) Init();
           
             var childCount = 0;
-
+            
             foreach (var child in childTransformCash)
             {
-          
-                var childProgress = Mathf.Clamp(Mathf.InverseLerp( staggerPropsList[childCount].startTiming,  staggerPropsList[childCount].endTiming, (float) progress), 0f, 1f);
+
+                var staggerProp = staggerPropsList[childCount];
+
+                var start = 0f;
+                var end = 0f;
+
+                if (staggerType == StaggerType.Custom)
+                {
+                    start = staggerProp.startTimingCustom;
+                    end = staggerProp.endTimingCustom;
+                }
+                else
+                {
+                    start = staggerProp.startTiming;
+                    end = staggerProp.endTiming;
+                }
+                var childProgress = Mathf.Clamp(Mathf.InverseLerp( start,end, (float) progress), 0f, 1f);
                 UpdateAnimation(child, childProgress, childCount);
 
                 childCount++;

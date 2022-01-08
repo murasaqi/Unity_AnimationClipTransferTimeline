@@ -14,6 +14,8 @@ namespace UMotionGraphicUtilities
         public string name;
         [Range(0,1) ]  public float startTiming = 0.3f;
         [Range(0,1) ]public float endTiming = 0.7f;
+        public float startTimingCustom = 0.3f;
+        public float endTimingCustom = 0.3f;
         public AnimationClip assignedSingleAnimationClip;
         public AnimationClip assignedRandomAnimationClip;
         public AnimationClip assignedManualAnimationClip;
@@ -22,6 +24,7 @@ namespace UMotionGraphicUtilities
 
         public float RandomSeed = 0;
 
+        public StaggerType currentStaggerType;
         public AnimationClip PickAnimationClipByMode(AnimationClipMode mode)
         {
             if (mode == AnimationClipMode.Single)

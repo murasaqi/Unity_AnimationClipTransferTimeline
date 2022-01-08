@@ -72,15 +72,8 @@ namespace UMotionGraphicUtilities
                 // animationClipFoldout.visible = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
                 animationClipFoldout.value = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
 
-                if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Single)
-                {
-                    _serializedTargetObject.AssignSingleAnimationClip();
-                }
-
-                if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual)
-                {
-                    _serializedTargetObject.CheckAssignAnimationClip();
-                }
+                
+                _serializedTargetObject.CheckAssignAnimationClip();
                 InitStaggerUIList();
             });
 
@@ -284,11 +277,11 @@ namespace UMotionGraphicUtilities
             var animationClipField = root.Query<ObjectField>("AnimationClipField").First();
             animationClipField.value = staggerProps.PickAnimationClipByMode(_serializedTargetObject.AnimationClipMode);
             animationClipField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual);
-                
             minMaxSlider.highLimit = staggerProps.highLimit;
             minMaxSlider.lowLimit = staggerProps.lowLimit;
-            minMaxSlider.maxValue = staggerProps.endTiming;
-            minMaxSlider.minValue = staggerProps.startTiming;
+            minMaxSlider.maxValue = staggerProps.currentStaggerType == StaggerType.Custom ? staggerProps.endTimingCustom : staggerProps.endTiming;
+            minMaxSlider.minValue = staggerProps.currentStaggerType == StaggerType.Custom ? staggerProps.startTimingCustom : staggerProps.startTiming;
+            
         }
         
 
@@ -296,35 +289,49 @@ namespace UMotionGraphicUtilities
         {
             var target = serializedObject.targetObject as AnimationClipTransfer;
             var staggerProps = target.StaggerPropsList[index];
-            var delayField = root.Query<FloatField>("Start").First();
+            var startField = root.Query<FloatField>("Start").First();
 
 
             root.Query<Label>("Name").First().text = childName;
                 
                 
-            delayField.value = staggerProps.startTiming;
+            startField.value = staggerProps.currentStaggerType == StaggerType.Random ? staggerProps.startTimingCustom : staggerProps.startTiming;
             // delayField.RegisterCallback().;
-            delayField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
+            startField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
             {
                 
                 var v = evt.newValue;
                 if (staggerProps.lowLimit > evt.newValue)
                     v = evt.previousValue;
-                
-                staggerProps.startTiming = evt.newValue;
+
+                if (staggerProps.currentStaggerType == StaggerType.Custom)
+                {
+                    staggerProps.startTimingCustom = evt.newValue;
+                }
+                else
+                {
+                    staggerProps.startTiming = evt.newValue;
+                }
                 root.Query<MinMaxSlider>().First().value = new Vector2(staggerProps.startTiming, staggerProps.endTiming);
          
 
             });
 
-            var durationField = root.Query<FloatField>("End").First();
-            durationField.value = staggerProps.endTiming;
-            durationField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
+            var endField = root.Query<FloatField>("End").First();
+            endField.value = staggerProps.currentStaggerType == StaggerType.Random ? staggerProps.endTimingCustom : staggerProps.endTiming;
+            endField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
             {
                 var v = evt.newValue;
                 if (staggerProps.highLimit < evt.newValue)
                     v = evt.previousValue;
-                staggerProps.endTiming = v;
+                if (staggerProps.currentStaggerType == StaggerType.Custom)
+                {
+                    staggerProps.endTimingCustom = v;
+                }
+                else
+                {
+                    staggerProps.endTiming = v;
+                }
                 root.Query<MinMaxSlider>().First().value = new Vector2(staggerProps.startTiming, staggerProps.endTiming);
             });
 
@@ -357,17 +364,31 @@ namespace UMotionGraphicUtilities
             var minMaxSlider = root.Query<MinMaxSlider>("MinMaxSlider").First();
             minMaxSlider.lowLimit = lowLimitField.value;
             minMaxSlider.highLimit = highLimitField.value;
-            minMaxSlider.minValue = delayField.value;
-            minMaxSlider.maxValue = durationField.value;
+            minMaxSlider.minValue = startField.value;
+            minMaxSlider.maxValue = endField.value;
             minMaxSlider.RegisterValueChangedCallback((evt) =>
             {
                 var target = serializedObject.targetObject as AnimationClipTransfer;
                 var staggerProps = target.StaggerPropsList[index];
                 // Debug.Log(evt.newValue.x);
-                delayField.SetValueWithoutNotify(evt.newValue.x);
-                durationField.SetValueWithoutNotify(evt.newValue.y);
-                staggerProps.startTiming = evt.newValue.x;
-                staggerProps.endTiming = evt.newValue.y;
+                startField.SetValueWithoutNotify(evt.newValue.x);
+                endField.SetValueWithoutNotify(evt.newValue.y);
+                if (staggerProps.currentStaggerType == StaggerType.Custom)
+                {
+                    staggerProps.startTimingCustom = evt.newValue.x;
+                }
+                else
+                {
+                    staggerProps.startTiming = evt.newValue.x;
+                }
+                if (staggerProps.currentStaggerType == StaggerType.Custom)
+                {
+                    staggerProps.endTimingCustom = evt.newValue.y;
+                }
+                else
+                {
+                    staggerProps.endTiming = evt.newValue.y;
+                }
                 serializedObject.ApplyModifiedProperties();
                 // Debug.Log(staggerProps.startTiming);
             });

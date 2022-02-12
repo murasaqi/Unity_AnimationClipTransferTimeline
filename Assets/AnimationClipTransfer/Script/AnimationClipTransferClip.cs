@@ -16,7 +16,7 @@ namespace UMotionGraphicUtilities
         public Vector3 LocalPosition;
         public Vector3 LocalEulerAngle;
         public Vector3 LocalScale;
-        public double Progress;
+        [Range(0,1)]public double Progress;
 
 
         public void ResetTransform()
@@ -62,6 +62,7 @@ namespace UMotionGraphicUtilities
     public enum AnimationClipMode
     {
         Single,
+        Multiple,
         Random,
         Manual
     }
@@ -69,6 +70,7 @@ namespace UMotionGraphicUtilities
     public class AnimationClipTransferClip : PlayableAsset, ITimelineClipAsset
     {
 
+        [SerializeField] private bool updateInEditor = false;
         public AnimationClipTransferBehaviour template = new AnimationClipTransferBehaviour();
         public AnimationClip AnimationClip;
         public ExposedReference<GameObject> TartgetObject;
@@ -81,9 +83,7 @@ namespace UMotionGraphicUtilities
         [SerializeField] private StaggerType _staggerType;
         [SerializeField] private TransformCash _transformCash;
         [SerializeField] private List<TransformCash> _childTransformCash;
-       
         public StaggerType StaggerType => _staggerType;
-
         public AnimationTargetType AnimationTargetType => _animationTargetType;
         public bool ToggleActiveOnClip => _toggleActiveOnClip;
         // public AnimationCurve curve;

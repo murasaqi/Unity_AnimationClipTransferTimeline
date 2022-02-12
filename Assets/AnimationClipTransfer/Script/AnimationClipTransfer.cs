@@ -1,11 +1,6 @@
 
-using System;
 using System.Collections.Generic;
-using System.Timers;
-using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace UMotionGraphicUtilities
@@ -23,6 +18,7 @@ namespace UMotionGraphicUtilities
         [HideInInspector] [SerializeField] private ValueCalcType scaleCalcType = ValueCalcType.Multiply;
         [HideInInspector] [SerializeField] private StaggerType staggerType = StaggerType.AutoInOut;
         [HideInInspector] [SerializeField] private List<StaggerPropsBehaviour> staggerPropsList =new List<StaggerPropsBehaviour>();
+        // [SerializeField] private List<StaggerPropObject> _list = new List<StaggerPropObject>();
         [HideInInspector] [SerializeField] private float staggerRatio = 0.3f;
         [SerializeField] private TransformCashList transformCashList;
         [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
@@ -197,9 +193,33 @@ namespace UMotionGraphicUtilities
             }
             
         }
+        
+        public void AssignMultipleAnimationClip()
+        {
+           
+            if (animationClipMode == AnimationClipMode.Random)
+            {
+                foreach (var staggerProps in staggerPropsList)
+                {
+                    if (staggerProps.assignedMultipleAnimationClip == null)
+                        staggerProps.assignedMultipleAnimationClip = new List<AnimationClip>();
+
+                    if (animationClips != null && animationClips.Count > 0)
+                    {
+                        foreach (var animationClip in animationClips)
+                        {
+                            staggerProps.assignedMultipleAnimationClip.Add(animationClip);
+                        }
+                    }
+                    
+                }
+            }
+            
+        }
 
         public void AssignSingleAnimationClip()
         {
+            
             if (animationClipMode == AnimationClipMode.Single)
             {
                 foreach (var staggerProps in staggerPropsList)
@@ -215,13 +235,27 @@ namespace UMotionGraphicUtilities
         public void InitStaggerValues()
         {
             if(targetObject == null) return;
-            var childLength = targetObject.transform.childCount;
+            // var childLength = targetObject.transform.childCount;
             var childCount = 0;
             if (animationClips.Count == 0)
             {
                 animationClips = new List<AnimationClip>();
                 animationClips.Add(animationClip);
             }
+            
+            if (animationClipMode == AnimationClipMode.Single)
+            {
+               AssignSingleAnimationClip();
+            }
+            if (animationClipMode == AnimationClipMode.Random)
+            {
+                AssignRandomAnimationClip();
+            }
+            if (animationClipMode == AnimationClipMode.Multiple)
+            {
+                AssignMultipleAnimationClip();
+            }
+            
             foreach (Transform child in targetObject.transform)
             {
                 
@@ -243,24 +277,8 @@ namespace UMotionGraphicUtilities
                 staggerPropsBehaviour = staggerPropsList[childCount];
                 staggerPropsBehaviour.name = $"{childCount}: {child.gameObject.name}";
 
-
-                if (animationClipMode == AnimationClipMode.Single)
-                {
-                    staggerPropsBehaviour.assignedSingleAnimationClip = animationClip;
-                }
-                if (animationClipMode == AnimationClipMode.Random)
-                {
-                    staggerPropsBehaviour.assignedRandomAnimationClip = animationClips[Random.Range(0, animationClips.Count)];
-                }
-                if (animationClipMode == AnimationClipMode.Manual)
-                {
-                    
-                    if(staggerPropsBehaviour.assignedManualAnimationClip)staggerPropsBehaviour.assignedRandomAnimationClip = animationClip;
-                }
-
                 staggerPropsBehaviour.currentStaggerType = staggerType;
-                // staggerPropsBehaviour.RandomSeed = Random.Range()
-                if (staggerType != StaggerType.Custom)
+                 if (staggerType != StaggerType.Custom)
                 {
                     staggerPropsBehaviour.lowLimit = 0;
                     staggerPropsBehaviour.highLimit = 1;

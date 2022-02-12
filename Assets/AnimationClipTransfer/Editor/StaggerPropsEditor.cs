@@ -93,5 +93,100 @@ namespace UMotionGraphicUtilities
         }
     }
     
+    
+    [CustomEditor(typeof(AnimationStagger), true)]
+    public class AnimationStaggerElementEditor : Editor
+    {
+        private MinMaxSlider _minMaxSlider;
+        private AnimationStagger _animationStagger;
+        private FloatField _low;
+        private FloatField _high;
+        private FloatField _start;
+        private FloatField _end;
+        public override VisualElement CreateInspectorGUI()
+        {
+            // Inspector拡張の場合、VisualElementはnewする   
+            var root = new VisualElement();
+            _animationStagger = serializedObject.targetObject as AnimationStagger;
+            root.Bind(serializedObject);
+            
+
+            var visualTree = Resources.Load<VisualTreeAsset>("AnimationStaggerElementUI");
+
+            visualTree.CloneTree(root);
+            
+            var progressBar = root.Q<Slider>("DebugProgressField");
+            progressBar.SetEnabled(_animationStagger.updateInEditor);
+
+            var updateInEditor = root.Q<Toggle>("UpdateInEditorModeField");
+            updateInEditor.RegisterValueChangedCallback(evt => progressBar.SetEnabled(evt.newValue));
+
+
+
+
+
+            var single = root.Q<ObjectField>("SingleAnimationClipField");
+            single.objectType = typeof(AnimationClip);
+            
+            var random = root.Q<ObjectField>("RandomAnimationClipField");
+            random.objectType = typeof(AnimationClip);
+            
+            var manual = root.Q<ObjectField>("ManualAnimationClipField");
+            manual.objectType = typeof(AnimationClip);
+            
+            _minMaxSlider = root.Q<MinMaxSlider>("MinMaxSlider");
+            
+            
+            _low = root.Q<FloatField>("LowLimit");
+            _high = root.Q<FloatField>("HighLimit");
+            _start = root.Q<FloatField>("Start");
+            _end = root.Q<FloatField>("End");
+            
+            _low.RegisterValueChangedCallback(evt=>UpdateMinMaxSlider());
+            _high.RegisterValueChangedCallback(evt=>UpdateMinMaxSlider());
+            _start.RegisterValueChangedCallback(evt=>UpdateMinMaxSlider());
+            _end.RegisterValueChangedCallback(evt=>UpdateMinMaxSlider());
+            
+            
+            _minMaxSlider.RegisterValueChangedCallback(evt => UpdateStartEndValue());
+            
+            
+            return root;
+        }
+
+
+        private void UpdateMinMaxSlider()
+        {
+            if(_minMaxSlider == null || _animationStagger == null) return;
+            CheckHighLowValue();
+            _minMaxSlider.lowLimit = _animationStagger.lowLimit;
+            _minMaxSlider.highLimit = _animationStagger.highLimit;
+            _minMaxSlider.minValue = _animationStagger.startTiming;
+            _minMaxSlider.maxValue = _animationStagger.endTiming;
+        }
+        
+        private void CheckHighLowValue()
+        {
+            
+            _animationStagger.startTiming = Mathf.Clamp(_animationStagger.startTiming,
+                _animationStagger.lowLimit, _animationStagger.endTiming);
+            
+            _animationStagger.endTiming = Mathf.Clamp(_animationStagger.endTiming,
+                _animationStagger.startTiming, _animationStagger.highLimit);
+            
+        }
+        
+        private void UpdateStartEndValue()
+        {
+            // Debug.Log(_animationStaggerElement.startTiming);
+            if(_minMaxSlider == null || _animationStagger == null) return;
+            _animationStagger.startTiming = _minMaxSlider.value.x;
+            _animationStagger.endTiming = _minMaxSlider.value.y;
+        }
+    }
+    
+  
+    
+    
 #endif
 }

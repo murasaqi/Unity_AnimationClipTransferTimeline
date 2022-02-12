@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Generic;   
 using System.Linq;
 using System.Timers;
 using UnityEditor;
@@ -13,7 +13,7 @@ namespace UMotionGraphicUtilities
 #if UNITY_EDITOR
     
 
-    [CustomEditor(typeof(AnimationClipTransfer), true)]
+    // [CustomEditor(typeof(AnimationClipTransfer), true)]
     
     public class AnimationClipTransferEditor : Editor
     {
@@ -25,6 +25,8 @@ namespace UMotionGraphicUtilities
         private Slider debugProgressSlider;
         private VisualElement DebugPlayer;
         private Timer timer;
+        private Foldout animationClipFoldout;
+        private ObjectField animationClipField;
         public override VisualElement CreateInspectorGUI()
         {
             
@@ -48,36 +50,47 @@ namespace UMotionGraphicUtilities
 
             var targetObjectField = root.Query<ObjectField>("TargetObject").First();
             targetObjectField.objectType = typeof(GameObject);
-            var animationClipField = root.Query<ObjectField>("AnimationClip").First();
+            
+            SetTransformCash.SetEnabled(targetObjectField.value != null);
+            targetObjectField.RegisterValueChangedCallback((evt) =>
+            {
+                SetTransformCash.SetEnabled(evt.newValue != null);
+            });
+            if(_serializedTargetObject.TargetObject != null)targetObjectField.value = _serializedTargetObject.TargetObject;
+            
+            
+            // ----------------------------- Animation Clips ---------------------------------- //
+            animationClipField = root.Query<ObjectField>("AnimationClip").First();
+            if(_serializedTargetObject.AnimationClip != null)animationClipField.value = _serializedTargetObject.AnimationClip;
             animationClipField.objectType = typeof(AnimationClip);
-
-            targetObjectField.value = _serializedTargetObject.TargetObject;
-            animationClipField.value = _serializedTargetObject.AnimationClip;
-            var animationClipListField = root.Query<ListView>("AnimationClips").First();
-            // animationClipListField.value = _serializedTargetObject.animatioclips;
             var modeField = root.Query<EnumField>("AnimationClipMode").First();
             
-            var animationClipFoldout = root.Query<Foldout>("AnimationClipFoldout").First();
+            animationClipFoldout = root.Query<Foldout>("AnimationClipFoldout").First();
             animationClipField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Single);
             animationClipFoldout.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random);
-            // root.Query<Foldout>("AnimationClipFoldout").First().value =_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random;
-            // animationClipFoldout.visible =_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random;
 
-           
             modeField.RegisterValueChangedCallback((evt) =>
             {
-                animationClipField.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Single);
-                animationClipFoldout.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Random);
-                _serializedTargetObject.AnimationClipMode = (AnimationClipMode) modeField.value;
-                // animationClipFoldout.visible = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
-                animationClipFoldout.value = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
-
-                
+                // Debug.Log(evt.newValue);
+                animationClipField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Single);
+                animationClipFoldout.SetEnabled(_serializedTargetObject.AnimationClipMode  == AnimationClipMode.Random || 
+                                                _serializedTargetObject.AnimationClipMode  == AnimationClipMode.Multiple);
+                animationClipFoldout.value = animationClipFoldout.enabledSelf;
                 _serializedTargetObject.CheckAssignAnimationClip();
-                InitStaggerUIList();
+                if(animationClipField.value != null)InitStaggerUIList();
             });
+            
+            if ( _serializedTargetObject.AnimationClipMode == AnimationClipMode.Single && animationClipField.value != null)
+            {
+                if (_serializedTargetObject.AnimationClip == null)
+                    _serializedTargetObject.AnimationClip = animationClipField.value as AnimationClip;
+                _serializedTargetObject.AssignSingleAnimationClip();
+            }
 
-
+            animationClipField.RegisterValueChangedCallback((evt =>
+            {
+                staggerPropList.SetEnabled(evt.newValue != null);
+            }));
             var assignButton = root.Query<Button>("RandomAssignedButton").First();
 
             assignButton.clicked += () =>
@@ -110,16 +123,13 @@ namespace UMotionGraphicUtilities
                 
                 _serializedTargetObject.SaveTransformCashList();
             };
-
-
-
+            
             animationClipField.RegisterValueChangedCallback((evt) =>
             {
                 if (evt.newValue != null)
                 {
-                    if (targetObjectField.value) SetTransformCash.SetEnabled(true);
                     _serializedTargetObject.AnimationClip = evt.newValue as AnimationClip;
-
+                    if(evt.newValue != null)_serializedTargetObject.AssignSingleAnimationClip();
                 }
             });
          
@@ -129,7 +139,7 @@ namespace UMotionGraphicUtilities
             {
                 if (evt.newValue != null)
                 {
-                    if(animationClipField.value)SetTransformCash.SetEnabled(true);
+                    // if(animationClipField.value)SetTransformCash.SetEnabled(true);
                     _serializedTargetObject.TargetObject = evt.newValue as GameObject;
                     // _serializedTargetObject.Init();
                     InitStaggerUIList();
@@ -235,6 +245,21 @@ namespace UMotionGraphicUtilities
                     var clone = minMaxSliderElement.CloneTree();
                     var animationClipField = clone.Query<ObjectField>("AnimationClipField").First();
                     animationClipField.objectType = typeof(AnimationClip);
+                    
+                    var animationClipListField = clone.Query<ListView>("AnimationClipListField").First();
+                    if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Multiple)
+                    {
+                        animationClipListField.SetEnabled(true);
+                        foreach (var a in staggerProps.assignedMultipleAnimationClip)
+                        {
+                            var field = new ObjectField();
+                            field.objectType = typeof(AnimationClip);
+                            field.value = a;
+                            animationClipListField.Add(field);
+                        }
+                        
+                    }
+                 
                     animationClipField.RegisterValueChangedCallback((evt =>
                     {
                         if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual)

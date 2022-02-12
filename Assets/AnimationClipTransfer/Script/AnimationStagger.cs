@@ -8,53 +8,35 @@ using UnityEngine.Serialization;
 namespace UMotionGraphicUtilities
 {
 
-    // public interface  AnimationStaggerElement
-    // {
-    //     float startTiming { get; set; }
-    //     float endTiming { get; set; }
-    //     public float startTimingCustom  { get; set; }
-    //     public float endTimingCustom  { get; set; }
-    //     public float lowLimit { get; set; }
-    //     public float highLimit { get; set; }
-    //     public float randomSeed { get; set; }
-    //     public AnimationClip assignedSingleAnimationClip { get; set; }
-    //     public AnimationClip assignedRandomAnimationClip { get; set; }
-    //     public AnimationClip assignedManualAnimationClip { get; set; }
-    //     public List<AnimationClip> assignedMultipleAnimationClip { get; set; }
-    //     public StaggerType staggerType { get; set; }
-    //     public AnimationClipMode animationClipMode { get; set; }
-    //     public ValueCalcType valueCalcType { get; set; }
-    //     public List<AnimationClip> animationClipCue  { get; set; }
-    //     public TransformCash transformCash { get; set; }
-    // }
+   
 
     [ExecuteAlways]
     public class AnimationStagger : MonoBehaviour
 
     {
     [SerializeField] public bool updateInEditor = false;
+    [SerializeField, Range(0, 1)] public float progress = 0f;
     [SerializeField, Range(0, 1)] private float debugProgress = 0f;
-
     public float startTiming  = 0.3f;
     public float endTiming  = 0.7f;
     public float startTimingCustom   = 0.3f;
     public float endTimingCustom  = 0.7f;
     public float lowLimit  = 0f;
     public float highLimit  =1f;
-    // public float randomSeed  = 0f;
-    public AnimationClip assignedSingleAnimationClip;
-    public AnimationClip assignedRandomAnimationClip;
-    public AnimationClip assignedManualAnimationClip;
-    public List<AnimationClip> assignedMultipleAnimationClip  = new List<AnimationClip>();
-    // public StaggerType staggerType  = StaggerType.Custom;
+    public float randomSeed  =0f;
+    public NumberedAnimationClip assignedSingleAnimationClip = new NumberedAnimationClip();
+    public NumberedAnimationClip assignedRandomAnimationClip = new NumberedAnimationClip();
+    public NumberedAnimationClip assignedManualAnimationClip = new NumberedAnimationClip();
+    public List<NumberedAnimationClip> assignedMultipleAnimationClip  = new List<NumberedAnimationClip>();
+    public StaggerType staggerType  = StaggerType.AutoInOut;
     public AnimationClipMode animationClipMode  = AnimationClipMode.Single;
     public ValueCalcType valueCalcType_Position  = ValueCalcType.Add;
     public ValueCalcType valueCalcType_Rotation  = ValueCalcType.Add;
     public ValueCalcType valueCalcType_Scale  = ValueCalcType.Multiply;
-    public List<AnimationClip> animationClipCue  = new List<AnimationClip>();
+    public List<NumberedAnimationClip> numberedAnimationClipCue  = new List<NumberedAnimationClip>();
     public TransformCash transformCash  = new TransformCash();
-
-    public AnimationClip PickSingleAnimationClipByMode()
+    // private List<string> targetChildList = new List<string>();
+    public NumberedAnimationClip PickSingleAnimationClipByMode()
     {
         if (animationClipMode == AnimationClipMode.Single)
         {
@@ -86,42 +68,75 @@ namespace UMotionGraphicUtilities
         transformCash.LocalPosition = transform.localPosition;
         transformCash.LocalEulerAngle = transform.localEulerAngles;
         transformCash.LocalScale = transform.localScale;
-
-
     }
 
     private void InitAnimationClipCue()
     {
 
-        animationClipCue.Clear();
+       
+
+
+        // foreach (var animationClip in assignedMultipleAnimationClip)
+        // {
+        //     animationClip.targets = targetChildList;
+        // }
+
+        numberedAnimationClipCue.Clear();
 
         if (animationClipMode == AnimationClipMode.Multiple)
         {
             foreach (var v in assignedMultipleAnimationClip)
             {
-                if (v != null) animationClipCue.Add(v);
+                if (v != null) numberedAnimationClipCue.Add(v);
             }
         }
         else
         {
             var a = PickSingleAnimationClipByMode();
-            if (a != null) animationClipCue.Add(a);
+            if (a != null) numberedAnimationClipCue.Add(a);
         }
 
     }
 
-    public void RandomAssignAnimationClip()
+    public void Reset()
     {
+        progress = 0f;
+        debugProgress = 0f;
+
+        transformCash.LocalPosition = transformCash.LocalPosition;
+        transformCash.LocalEulerAngle = transformCash.LocalEulerAngle;
+        transformCash.LocalScale = transformCash.LocalScale;
+
+        randomSeed = Random.Range(0, 1f);
 
     }
 
-    public void UpdateSampleAnimation(float progress)
+    public void UpdateSampleAnimation(float progress, List<NumberedAnimationClip> animationClips)
     {
-        InitAnimationClipCue();
-        transformCash.Progress = progress;
-        foreach (var animationClip in animationClipCue)
+        MultipleSampleAnimation(CalcProgress(progress), animationClips);
+    }
+
+
+    public void InitNumberedAnimationClipIndex()
+    {
+        
+    }
+
+    public void MultipleSampleAnimation(float childProgress, List<NumberedAnimationClip> numberedAnimationClips)
+    {
+        foreach (var numberedAnimationClip in numberedAnimationClips)
         {
-            animationClip.SampleAnimation(gameObject, progress * animationClip.averageDuration);
+            // Debug.Log(numberedAnimationClip.clip);
+            if(numberedAnimationClip == null || numberedAnimationClip.clip == null) return;
+            if (numberedAnimationClip.index == 0)
+            {
+                numberedAnimationClip.clip.SampleAnimation(gameObject, childProgress * numberedAnimationClip.clip.averageDuration);    
+            }
+            else if (numberedAnimationClip.index > 0)
+            {
+                numberedAnimationClip.clip.SampleAnimation(gameObject.transform.GetChild(numberedAnimationClip.index-1).gameObject, childProgress * numberedAnimationClip.clip.averageDuration);
+            }
+            
             // AnimationClipはなんかGetKeyできないからTransformのどこに差分があるかを初期値と比較してるやつ
             if (transform.localPosition != transformCash.LocalPosition)
             {
@@ -205,7 +220,19 @@ namespace UMotionGraphicUtilities
 
             }
         }
+    }
+    public void UpdateSampleAnimation(float progress)
+    {
+        InitAnimationClipCue();
+        MultipleSampleAnimation(CalcProgress(progress),numberedAnimationClipCue);
+    }
 
+    private float CalcProgress(float progress)
+    {
+        this.progress = progress;
+        var start = staggerType == StaggerType.Custom ? startTimingCustom : startTiming;
+        var end = staggerType == StaggerType.Custom ? endTimingCustom : endTiming;
+        return Mathf.Clamp(Mathf.InverseLerp( start,end, (float) progress), 0f, 1f);
     }
 
     // Update is called once per frame

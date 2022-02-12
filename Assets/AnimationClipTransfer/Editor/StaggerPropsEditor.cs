@@ -1,3 +1,4 @@
+using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace UMotionGraphicUtilities
 
             root.Query<Label>("Title").First().text = target.gameObject.name;
             
-            root.Query<ObjectField>("AnimationClipField").First().objectType = typeof(AnimationClip);
+            root.Query<ObjectField>("AnimationClipField").First().objectType = typeof(NumberedAnimationClip);
             root.Query<FloatField>("LowLimit").First().RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
             {
                 
@@ -124,15 +125,7 @@ namespace UMotionGraphicUtilities
 
 
 
-
-            var single = root.Q<ObjectField>("SingleAnimationClipField");
-            single.objectType = typeof(AnimationClip);
             
-            var random = root.Q<ObjectField>("RandomAnimationClipField");
-            random.objectType = typeof(AnimationClip);
-            
-            var manual = root.Q<ObjectField>("ManualAnimationClipField");
-            manual.objectType = typeof(AnimationClip);
             
             _minMaxSlider = root.Q<MinMaxSlider>("MinMaxSlider");
             
@@ -186,7 +179,51 @@ namespace UMotionGraphicUtilities
     }
     
   
-    
+    [CustomPropertyDrawer(typeof(NumberedAnimationClip))]
+    public class NumberedAnimationClipDrawer : PropertyDrawer
+    {
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
+        {
+            var root = new VisualElement();
+            root.Bind(property.serializedObject);
+            
+        
+            var visualTree = Resources.Load<VisualTreeAsset>("NumberedAnimationClipUI");
+            
+            visualTree.CloneTree(root);
+
+            root.Q<ObjectField>("AnimationClipField").objectType = typeof(AnimationClip);
+
+            var dropdown = root.Q<DropdownField>("IndexList");
+            dropdown.choices.Clear();
+
+            // var target = property.serializedObject.targetObject as Class;
+            var count = property.FindPropertyRelative("targets").arraySize;
+            // Debug.Log(count);
+            for (int i = 0; i < count; i++)
+            {
+                dropdown.choices.Add(property.FindPropertyRelative("targets").GetArrayElementAtIndex(i).stringValue);
+            }
+            
+            dropdown.RegisterValueChangedCallback((evt) =>
+            {
+                Debug.Log(dropdown.index);
+                // Debug.Log(dropdown.IndexOf(evt.p));
+                property.FindPropertyRelative("index").intValue = dropdown.index;
+                
+                property.serializedObject.ApplyModifiedProperties();
+                
+            });
+
+            dropdown.index = Mathf.Min(property.FindPropertyRelative("index").intValue,dropdown.choices.Count-1);
+            
+            property.serializedObject.ApplyModifiedProperties();
+            return root;
+        
+           
+        }
+    }
+
     
 #endif
 }

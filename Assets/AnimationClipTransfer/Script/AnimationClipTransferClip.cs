@@ -16,7 +16,6 @@ namespace UMotionGraphicUtilities
         public Vector3 LocalPosition;
         public Vector3 LocalEulerAngle;
         public Vector3 LocalScale;
-        [Range(0,1)]public double Progress;
 
 
         public void ResetTransform()
@@ -29,15 +28,37 @@ namespace UMotionGraphicUtilities
         }
     }
 
+    [Serializable]
+    public class AnimationStaggerElementCash
+    {
+        public float progress;
+        public float startTiming  = 0.3f;
+        public float endTiming  = 0.7f;
+        public float startTimingCustom   = 0.3f;
+        public float endTimingCustom  = 0.7f;
+        public float lowLimit  = 0f;
+        public float highLimit  =1f;
+        public NumberedAnimationClip assignedSingleAnimationClip;
+        public NumberedAnimationClip assignedRandomAnimationClip;
+        public NumberedAnimationClip assignedManualAnimationClip;
+        public List<NumberedAnimationClip> assignedMultipleAnimationClip  = new List<NumberedAnimationClip>();
+        public AnimationClipMode animationClipMode  = AnimationClipMode.Single;
+        public ValueCalcType valueCalcType_Position  = ValueCalcType.Add;
+        public ValueCalcType valueCalcType_Rotation  = ValueCalcType.Add;
+        public ValueCalcType valueCalcType_Scale  = ValueCalcType.Multiply;
+        // public List<AnimationClip> animationClipCue  = new List<AnimationClip>();
+        public TransformCash transformCash  = new TransformCash();
+    }
+
 
    
     public enum StaggerType
     {
-        AutoIn,
-        AutoOut,
         AutoInOut,
         Random,
         RandomPerlin,
+        AutoIn,
+        AutoOut,
         Custom
         
     }
@@ -116,7 +137,7 @@ namespace UMotionGraphicUtilities
             _transformCash.LocalPosition = clone.TartgetObject.transform.localPosition;
             _transformCash.LocalEulerAngle = clone.TartgetObject.transform.localEulerAngles;
             _transformCash.LocalScale = clone.TartgetObject.transform.localScale;
-            _transformCash.Progress = -1f;
+            // _transformCash.pro = -1f;
 
             foreach (Transform child in _targetObject.transform)
             {
@@ -125,7 +146,7 @@ namespace UMotionGraphicUtilities
                 cash.LocalPosition = child.localPosition;
                 cash.LocalEulerAngle = child.localEulerAngles;
                 cash.LocalScale = child.localScale;
-                cash.Progress = -1f;
+                // cash.Progress = -1f;
                 _childTransformCash.Add(cash);
             }
 

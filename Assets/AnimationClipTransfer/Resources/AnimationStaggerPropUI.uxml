@@ -1,10 +1,12 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <uie:EnumField label="Mode" value="Center" name="AnimationClipModeField" binding-path="animationClipMode" text="Transform Update Mode" />
-    <ui:VisualElement name="AnimationClipElements">
+    <uie:EnumField label="Stagger Type" value="Center" name="StaggerTypeField" binding-path="staggerType" text="Transform Update Mode" />
+    <ui:VisualElement name="AnimationClipElements" focusable="true">
         <ui:ListView focusable="true" show-border="true" selection-type="Multiple" show-foldout-header="true" show-add-remove-footer="true" reorderable="true" horizontal-scrolling="true" binding-path="assignedMultipleAnimationClip" name="MultipleAnimationClipField" header-title="Assigned Multiple Animation Clip" virtualization-method="DynamicHeight" reorder-mode="Animated" />
-        <uie:ObjectField label="Assigned Single Animation Clip" binding-path="assignedSingleAnimationClip" name="SingleAnimationClipField" allow-scene-objects="false" style="margin-top: 2px; margin-bottom: 2px;" />
-        <uie:ObjectField label="Assigned Random Animation Clip" binding-path="assignedRandomAnimationClip" name="RandomAnimationClipField" allow-scene-objects="false" style="margin-top: 2px; margin-bottom: 2px; height: 18px;" />
-        <uie:ObjectField label="Assigned Manual Animation Clip" binding-path="assignedManualAnimationClip" name="ManualAnimationClipField" allow-scene-objects="false" style="margin-top: 2px; margin-bottom: 2px;" />
+        <uie:PropertyField binding-path="assignedSingleAnimationClip" name="SingleAnimationClipField" />
+        <uie:PropertyField binding-path="assignedRandomAnimationClip" name="RandomAnimationClipField" />
+        <uie:PropertyField binding-path="assignedManualAnimationClip" name="ManualAnimationClipField" />
+        <uie:PropertyField binding-path="numberedAnimationClipCue" name="AnimationClipCueField" />
     </ui:VisualElement>
     <ui:VisualElement name="StaggerElements">
         <ui:Foldout text="Transform Update Mode">
@@ -23,7 +25,11 @@
                     <uie:FloatField value="0.3" name="End" binding-path="endTiming" label="End" style="min-width: auto; max-width: 40px; width: auto; flex-direction: column;" />
                     <uie:FloatField value="1" name="HighLimit" binding-path="highLimit" readonly="false" label="Max" style="min-width: 40px; max-width: 40px; width: auto; justify-content: center; flex-direction: column; align-items: stretch;" />
                 </ui:VisualElement>
-                <uie:PropertyField binding-path="transformCash" name="TransformCashField" label="Transform Cash" />
+                <ui:VisualElement style="flex-direction: row; justify-content: space-around; align-items: center; flex-wrap: nowrap;">
+                    <uie:FloatField value="0.3" name="Start" binding-path="startTimingCustom" label="Start(Manual)" style="min-width: auto; max-width: none; width: 30%; flex-direction: column;" />
+                    <uie:FloatField value="0.3" name="End" binding-path="endTimingCustom" label="End(Manual)" style="min-width: auto; max-width: none; width: 30%; flex-direction: column; align-items: stretch;" />
+                </ui:VisualElement>
+                <uie:PropertyField binding-path="numberedAnimationClipCue" name="TransformCashField" label="Transform Cash" />
             </ui:Foldout>
         </ui:VisualElement>
     </ui:VisualElement>

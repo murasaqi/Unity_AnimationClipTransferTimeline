@@ -184,6 +184,12 @@ namespace UMotionGraphicUtilities
             debugMode.RegisterValueChangedCallback((evt) =>
             {
                 // _serializedTargetObject.
+
+                if (debugMode.value == false)
+                {
+                    _serializedTargetObject.ResetChildTransform();
+                    debugProgressSlider.value = 0f;
+                }
                 debugProgressSlider.SetEnabled(debugMode.value);
             });
             //
@@ -316,6 +322,7 @@ namespace UMotionGraphicUtilities
 
         private void SetUpStaggerElement(VisualElement staggerElement, AnimationStagger animationStagger)
         {
+            if(animationStagger == null) return;
             var nameField = staggerElement.Q<Label>("NameField");
             nameField.text = animationStagger.name;
             var start = staggerElement.Q<FloatField>("Start");

@@ -13,7 +13,6 @@ namespace UMotionGraphicUtilities
         [SerializeField] private GameObject targetObject;
         [SerializeField] public AnimationClipTransferProfile animationClipTransferProfile;
         [SerializeField] private AnimationClipMode animationClipMode = AnimationClipMode.Single;
-        // [SerializeField] private NumberedAnimationClip numberedAnimationClip = new NumberedAnimationClip();
         [SerializeField] private List<NumberedAnimationClip> numberedAnimationClips = new List<NumberedAnimationClip>();
         
         [SerializeField] private ValueCalcType positionCalcType = ValueCalcType.Add;
@@ -250,15 +249,19 @@ namespace UMotionGraphicUtilities
             if (numberedAnimationClips == null || numberedAnimationClips.Count == 0)
             {
                 numberedAnimationClips = new List<NumberedAnimationClip>();
-                numberedAnimationClips.Add(numberedAnimationClips.First());
+                // numberedAnimationClips.Add(numberedAnimationClips.First());
             }
-            if (animationClipMode == AnimationClipMode.Random)
+            else
             {
-                foreach (var staggerProps in animationStaggers)
+                if (animationClipMode == AnimationClipMode.Random)
                 {
-                    staggerProps.assignedRandomAnimationClip = numberedAnimationClips[Random.Range(0, numberedAnimationClips.Count)];
-                }
+                    foreach (var staggerProps in animationStaggers)
+                    {
+                        staggerProps.assignedRandomAnimationClip = numberedAnimationClips[Random.Range(0, numberedAnimationClips.Count)];
+                    }
+                }       
             }
+         
             
         }
         

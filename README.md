@@ -1,0 +1,4 @@
+# Unity_AnimationClipTransferTimeline
+
+Previewブランチが最新のコミット。
+masterブランチもまだ不安定です。

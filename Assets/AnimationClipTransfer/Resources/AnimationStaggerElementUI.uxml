@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Template name="AnimationStaggerPropUI" src="project://database/Packages/com.murasaqi.animation_clip_transfer/Resources/AnimationStaggerPropUI.uxml?fileID=9197481963319205126&amp;guid=2f4f28775155cf04480dca68064d70db&amp;type=3#AnimationStaggerPropUI" />
+    <ui:VisualElement name="DebugElements">
+        <ui:Toggle label="Update in editor" name="UpdateInEditorModeField" binding-path="updateInEditor" />
+        <ui:Slider picking-mode="Ignore" label="Debug Progress" value="0" high-value="1" binding-path="debugProgress" name="DebugProgressField" />
+    </ui:VisualElement>
+    <ui:Instance template="AnimationStaggerPropUI" name="AnimationStaggerPropUI" />
+</ui:UXML>

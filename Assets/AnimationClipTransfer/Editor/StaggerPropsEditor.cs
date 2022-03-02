@@ -1,3 +1,4 @@
+// using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -52,7 +53,7 @@ namespace UMotionGraphicUtilities
 
             root.Query<Label>("Title").First().text = target.gameObject.name;
             
-            root.Query<ObjectField>("AnimationClipField").First().objectType = typeof(AnimationClip);
+            root.Query<ObjectField>("AnimationClipField").First().objectType = typeof(NumberedAnimationClip);
             root.Query<FloatField>("LowLimit").First().RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
             {
                 
@@ -92,6 +93,137 @@ namespace UMotionGraphicUtilities
             return root;
         }
     }
+    
+    
+    [CustomEditor(typeof(AnimationStagger), true)]
+    public class AnimationStaggerElementEditor : Editor
+    {
+        private MinMaxSlider _minMaxSlider;
+        private AnimationStagger _animationStagger;
+        private FloatField _low;
+        private FloatField _high;
+        private FloatField _start;
+        private FloatField _end;
+        public override VisualElement CreateInspectorGUI()
+        {
+            // Inspector拡張の場合、VisualElementはnewする   
+            var root = new VisualElement();
+            _animationStagger = serializedObject.targetObject as AnimationStagger;
+            root.Bind(serializedObject);
+            
+
+            var visualTree = Resources.Load<VisualTreeAsset>("AnimationStaggerElementUI");
+
+            visualTree.CloneTree(root);
+            
+            var progressBar = root.Q<Slider>("DebugProgressField");
+            progressBar.SetEnabled(_animationStagger.updateInEditor);
+
+            var updateInEditor = root.Q<Toggle>("UpdateInEditorModeField");
+            updateInEditor.RegisterValueChangedCallback(evt => progressBar.SetEnabled(evt.newValue));
+
+
+
+
+            
+            
+            _minMaxSlider = root.Q<MinMaxSlider>("MinMaxSlider");
+            
+            
+            _low = root.Q<FloatField>("LowLimit");
+            _high = root.Q<FloatField>("HighLimit");
+            _start = root.Q<FloatField>("Start");
+            _end = root.Q<FloatField>("End");
+            
+            _low.RegisterValueChangedCallback(evt=>UpdateMinMaxSlider());
+            _high.RegisterValueChangedCallback(evt=>UpdateMinMaxSlider());
+            _start.RegisterValueChangedCallback(evt=>UpdateMinMaxSlider());
+            _end.RegisterValueChangedCallback(evt=>UpdateMinMaxSlider());
+            
+            
+            _minMaxSlider.RegisterValueChangedCallback(evt => UpdateStartEndValue());
+            
+            
+            return root;
+        }
+
+
+        private void UpdateMinMaxSlider()
+        {
+            if(_minMaxSlider == null || _animationStagger == null) return;
+            CheckHighLowValue();
+            _minMaxSlider.lowLimit = _animationStagger.lowLimit;
+            _minMaxSlider.highLimit = _animationStagger.highLimit;
+            _minMaxSlider.minValue = _animationStagger.startTiming;
+            _minMaxSlider.maxValue = _animationStagger.endTiming;
+        }
+        
+        private void CheckHighLowValue()
+        {
+            
+            _animationStagger.startTiming = Mathf.Clamp(_animationStagger.startTiming,
+                _animationStagger.lowLimit, _animationStagger.endTiming);
+            
+            _animationStagger.endTiming = Mathf.Clamp(_animationStagger.endTiming,
+                _animationStagger.startTiming, _animationStagger.highLimit);
+            
+        }
+        
+        private void UpdateStartEndValue()
+        {
+            // Debug.Log(_animationStaggerElement.startTiming);
+            if(_minMaxSlider == null || _animationStagger == null) return;
+            _animationStagger.startTiming = _minMaxSlider.value.x;
+            _animationStagger.endTiming = _minMaxSlider.value.y;
+        }
+    }
+    
+  
+    [CustomPropertyDrawer(typeof(NumberedAnimationClip))]
+    public class NumberedAnimationClipDrawer : PropertyDrawer
+    {
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
+        {
+            var root = new VisualElement();
+            root.Bind(property.serializedObject);
+            
+        
+            var visualTree = Resources.Load<VisualTreeAsset>("NumberedAnimationClipUI");
+            
+            visualTree.CloneTree(root);
+
+            root.Q<ObjectField>("AnimationClipField").objectType = typeof(AnimationClip);
+
+            var dropdown = root.Q<DropdownField>("IndexList");
+            dropdown.choices.Clear();
+
+            // var target = property.serializedObject.targetObject as Class;
+            var count = property.FindPropertyRelative("targets").arraySize;
+            // Debug.Log(count);
+            for (int i = 0; i < count; i++)
+            {
+                dropdown.choices.Add(property.FindPropertyRelative("targets").GetArrayElementAtIndex(i).stringValue);
+            }
+            
+            dropdown.RegisterValueChangedCallback((evt) =>
+            {
+                Debug.Log(dropdown.index);
+                // Debug.Log(dropdown.IndexOf(evt.p));
+                property.FindPropertyRelative("index").intValue = dropdown.index;
+                
+                property.serializedObject.ApplyModifiedProperties();
+                
+            });
+
+            dropdown.index = Mathf.Min(property.FindPropertyRelative("index").intValue,dropdown.choices.Count-1);
+            
+            property.serializedObject.ApplyModifiedProperties();
+            return root;
+        
+           
+        }
+    }
+
     
 #endif
 }

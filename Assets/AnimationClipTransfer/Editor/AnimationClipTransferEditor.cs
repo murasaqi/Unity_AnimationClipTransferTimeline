@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Generic;   
 using System.Linq;
 using System.Timers;
 using UnityEditor;
@@ -18,13 +18,18 @@ namespace UMotionGraphicUtilities
     public class AnimationClipTransferEditor : Editor
     {
         private AnimationClipTransfer _serializedTargetObject;
-        private VisualElement staggerPropList;
+        private VisualElement staggerList;
         private VisualElement root;
         private VisualElement animationProps;
-        private Button SetTransformCash;
+        private Button createProfileButton;
+        private Button saveProfileButton;
+        private Button loadProfileButton;
         private Slider debugProgressSlider;
-        private VisualElement DebugPlayer;
+        private Toggle debugMode;
         private Timer timer;
+        
+        // private ObjectField animationClipField;
+        private ListView animationClipListField;
         public override VisualElement CreateInspectorGUI()
         {
             
@@ -35,247 +40,238 @@ namespace UMotionGraphicUtilities
             root.viewDataKey = "AnimationClipTransfer";
             
             
-            var visualTree = Resources.Load<VisualTreeAsset>("StaggerAnimationSettings");
+            var visualTree = Resources.Load<VisualTreeAsset>("AnimationClipTransferUI");
             visualTree.CloneTree(root);
-            
-           
-            var container = new IMGUIContainer(OnInspectorGUI);
-            root.Add(container);
-            
-            staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
-            animationProps = root.Query<VisualElement>("AnimationProps");
-            SetTransformCash = root.Query<Button>("ApplyChildrenButton").First();
-
-            var targetObjectField = root.Query<ObjectField>("TargetObject").First();
+          
+            var targetObjectField = root.Q<ObjectField>("TargetObject");
             targetObjectField.objectType = typeof(GameObject);
-            var animationClipField = root.Query<ObjectField>("AnimationClip").First();
-            animationClipField.objectType = typeof(AnimationClip);
 
-            targetObjectField.value = _serializedTargetObject.TargetObject;
-            animationClipField.value = _serializedTargetObject.AnimationClip;
-            var animationClipListField = root.Query<ListView>("AnimationClips").First();
-            // animationClipListField.value = _serializedTargetObject.animatioclips;
-            var modeField = root.Query<EnumField>("AnimationClipMode").First();
-            
-            var animationClipFoldout = root.Query<Foldout>("AnimationClipFoldout").First();
-            animationClipField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Single);
-            animationClipFoldout.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random);
-            // root.Query<Foldout>("AnimationClipFoldout").First().value =_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random;
-            // animationClipFoldout.visible =_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random;
+            var profileField = root.Q<ObjectField>("ProfileField");
+            profileField.objectType = typeof(AnimationClipTransferProfile);
 
-           
-            modeField.RegisterValueChangedCallback((evt) =>
+            // -------------------------------- Button Event ------------------------------------ //
+            createProfileButton = root.Q<Button>("CreateButton");
+            createProfileButton.SetEnabled(_serializedTargetObject.animationClipTransferProfile == null);
+            profileField.RegisterValueChangedCallback((evt) =>
             {
-                animationClipField.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Single);
-                animationClipFoldout.SetEnabled((AnimationClipMode) modeField.value == AnimationClipMode.Random);
-                _serializedTargetObject.AnimationClipMode = (AnimationClipMode) modeField.value;
-                // animationClipFoldout.visible = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
-                animationClipFoldout.value = (AnimationClipMode) modeField.value == AnimationClipMode.Random;
-
-                
-                _serializedTargetObject.CheckAssignAnimationClip();
-                InitStaggerUIList();
+                createProfileButton.SetEnabled(evt.newValue == null);
             });
-
-
-            var assignButton = root.Query<Button>("RandomAssignedButton").First();
-
-            assignButton.clicked += () =>
-            {
-                _serializedTargetObject.AssignRandomAnimationClip();
-                InitStaggerUIList();
-            };
             
-            SetTransformCash.clicked += () =>
+            
+            createProfileButton.clicked += () =>
             {
-
-                TransformCashList asset = ScriptableObject.CreateInstance<TransformCashList>();
-
+            
+                _serializedTargetObject.InitAnimationStaggerList();
+                AnimationClipTransferProfile asset = ScriptableObject.CreateInstance<AnimationClipTransferProfile>();
+            
                 AssetDatabase.CreateAsset(asset, $"Assets/{_serializedTargetObject.name}_{_serializedTargetObject.GetInstanceID()}.asset");
                 AssetDatabase.SaveAssets();
-
+            
                 EditorUtility.FocusProjectWindow();
-
-                _serializedTargetObject.TransformCashList = asset;
-                
-                _serializedTargetObject.Init();
-
-                if (_serializedTargetObject.ChildTransformCashCount > 0)
+            
+                _serializedTargetObject.AnimationClipTransferProfile = asset;
+                if (_serializedTargetObject.animationStaggers != null)
                 {
                     animationProps.SetEnabled(true);
                     root.Query<Foldout>("StaggerSliderFoldout").First().value = true;
                     
                     root.Query<Foldout>("TransformCalcType").First().value = true;
                 }
-                
-                _serializedTargetObject.SaveTransformCashList();
+                _serializedTargetObject.SaveCash();
             };
-
-
-
-            animationClipField.RegisterValueChangedCallback((evt) =>
+            
+            saveProfileButton = root.Q<Button>("SaveButton");
+            saveProfileButton.SetEnabled(_serializedTargetObject.animationClipTransferProfile != null);
+            saveProfileButton.clicked += () =>
             {
-                if (evt.newValue != null)
-                {
-                    if (targetObjectField.value) SetTransformCash.SetEnabled(true);
-                    _serializedTargetObject.AnimationClip = evt.newValue as AnimationClip;
+            
+                _serializedTargetObject.SaveCash();
+            };
+            
+            // ----------------------------- Stagger List ---------------------------------- //
 
-                }
-            });
-         
-            
-            
-            targetObjectField.RegisterValueChangedCallback((evt) =>
+            if (_serializedTargetObject.animationStaggers != null &&
+                _serializedTargetObject.animationStaggers.Count > 0)
             {
-                if (evt.newValue != null)
-                {
-                    if(animationClipField.value)SetTransformCash.SetEnabled(true);
-                    _serializedTargetObject.TargetObject = evt.newValue as GameObject;
-                    // _serializedTargetObject.Init();
-                    InitStaggerUIList();
-                    
-                }
+                _serializedTargetObject.InitStaggerValues();
+                InitStaggerUIList();
+                _serializedTargetObject.UpdateProfile();
+            }
+            //
+            // // ----------------------------- Animation Clips ---------------------------------- //
+            
+            var modeField = root.Q<EnumField>("AnimationClipMode");
+            animationClipListField = root.Q<ListView>("AnimationClipsField");
+            modeField.RegisterValueChangedCallback((evt) =>
+            {
+                _serializedTargetObject.AssignAnimationClip();
             });
-            
-            
-            var staggerRatio = root.Query<Slider>("StaggerRatio").First(); 
+
+            var assignButton = root.Q<Button>("AssignButton");
+            assignButton.clicked += () =>
+            {
+                _serializedTargetObject.AssignAnimationClip();
+                _serializedTargetObject.UpdateProfile();
+            };
+            //
+            // if ( _serializedTargetObject.AnimationClipMode == AnimationClipMode.Single && animationClipField.value != null)
+            // {
+            //     if (_serializedTargetObject.AnimationClip == null)
+            //         _serializedTargetObject.AnimationClip = animationClipField.value as AnimationClip;
+            //     _serializedTargetObject.AssignSingleAnimationClip();
+            // }
+            //
+            // animationClipField.RegisterValueChangedCallback((evt =>
+            // {
+            //     staggerPropList.SetEnabled(evt.newValue != null);
+            // }));
+            // var assignButton = root.Query<Button>("RandomAssignedButton").First();
+            //
+            // assignButton.clicked += () =>
+            // {
+            //     _serializedTargetObject.AssignRandomAnimationClip();
+            //     InitStaggerUIList();
+            // };
+            //
+       
+            //
+            // animationClipField.RegisterValueChangedCallback((evt) =>
+            // {
+            //     if (evt.newValue != null)
+            //     {
+            //         _serializedTargetObject.AnimationClip = evt.newValue as AnimationClip;
+            //         if(evt.newValue != null)_serializedTargetObject.AssignSingleAnimationClip();
+            //     }
+            // });
+            //
+            //
+            //
+            // targetObjectField.RegisterValueChangedCallback((evt) =>
+            // {
+            //     if (evt.newValue != null)
+            //     {
+            //         // if(animationClipField.value)SetTransformCash.SetEnabled(true);
+            //         _serializedTargetObject.TargetObject = evt.newValue as GameObject;
+            //         // _serializedTargetObject.Init();
+            //         InitStaggerUIList();
+            //         
+            //     }
+            // });
+            //
+            //
+            var staggerRatio = root.Q<Slider>("StaggerRatio"); 
             staggerRatio.RegisterValueChangedCallback((evt) =>
             {
                 _serializedTargetObject.InitStaggerValues();
-                InitStaggerUIList();
+                UpdateStaggerList();
+                _serializedTargetObject.UpdateProfile();
             });
-           
-           
-            root.Query<EnumField>("StaggerType").First().RegisterValueChangedCallback((evt) =>
+            //
+            //
+            root.Q<EnumField>("StaggerType").RegisterValueChangedCallback((evt) =>
             {
-
-                if (evt.newValue != null)
-                { 
-                    if (evt.newValue.ToString() == "AutoIn") _serializedTargetObject.StaggerType = StaggerType.AutoIn;
-                    if (evt.newValue.ToString() == "AutoOut") _serializedTargetObject.StaggerType = StaggerType.AutoOut;
-                    if (evt.newValue.ToString() == "AutoInOut") _serializedTargetObject.StaggerType = StaggerType.AutoInOut;
-                    if (evt.newValue.ToString() == "Random") _serializedTargetObject.StaggerType = StaggerType.Random;
-                    if (evt.newValue.ToString() == "Custom")
-                    {
-                        _serializedTargetObject.StaggerType = StaggerType.Custom;
-                        staggerRatio.SetEnabled(false);
-                    }
-                    else
-                    {
-                        staggerRatio.SetEnabled(true);
-                    }
-                }
-              
                 _serializedTargetObject.InitStaggerValues();
                 InitStaggerUIList();
+                _serializedTargetObject.UpdateProfile();
             });
-
-
-
-
-            DebugPlayer = root.Query<VisualElement>("DebugPlayer");
-            debugProgressSlider = root.Query<Slider>("DebugProgress").First();
-            debugProgressSlider.RegisterValueChangedCallback((evt) =>
+            //
+            //
+            //
+            //
+            debugMode = root.Q<Toggle>("DebugMode");
+            debugProgressSlider = root.Q<Slider>("DebugProgress");
+            debugProgressSlider.SetEnabled(debugMode.value);
+            debugMode.RegisterValueChangedCallback((evt) =>
             {
-                if(_serializedTargetObject.DebugMode) _serializedTargetObject.ProcessFrame(evt.newValue);
-            });
+                // _serializedTargetObject.
 
-
-            // root.Query<Button>("DebugPlayButton").First().clickable.clicked += _serializedTargetObject.DebugPlay;
-            root.Query<Toggle>("DebugMode").First().RegisterValueChangedCallback((evt) =>
-            {
-                if (evt.previousValue != null && evt.newValue == false && evt.previousValue == true)
+                if (debugMode.value == false)
                 {
                     _serializedTargetObject.ResetChildTransform();
+                    debugProgressSlider.value = 0f;
                 }
-
-                if (evt.newValue)
-                {
-                    _serializedTargetObject.ProcessFrame(debugProgressSlider.value);
-
-                } 
-                
-                if(evt.newValue == false)debugProgressSlider.SetValueWithoutNotify(0);
-                
-                
-                DebugPlayer.SetEnabled(evt.newValue);
-
-                _serializedTargetObject.DebugMode = evt.newValue;
+                debugProgressSlider.SetEnabled(debugMode.value);
             });
+            //
+            //
+            // // root.Query<Button>("DebugPlayButton").First().clickable.clicked += _serializedTargetObject.DebugPlay;
+            // root.Query<Toggle>("DebugMode").First().RegisterValueChangedCallback((evt) =>
+            // {
+            //     if (evt.previousValue != null && evt.newValue == false && evt.previousValue == true)
+            //     {
+            //         _serializedTargetObject.ResetChildTransform();
+            //     }
+            //
+            //     if (evt.newValue)
+            //     {
+            //         _serializedTargetObject.ProcessFrame(debugProgressSlider.value);
+            //
+            //     } 
+            //     
+            //     if(evt.newValue == false)debugProgressSlider.SetValueWithoutNotify(0);
+            //     
+            //     
+            //     DebugPlayer.SetEnabled(evt.newValue);
+            //
+            //     _serializedTargetObject.DebugMode = evt.newValue;
+            // });
+            //
+            // root.Query<CurveField>("DurationCurve").First().RegisterValueChangedCallback((evt) =>
+            // {
+            //     _serializedTargetObject.InitStaggerValues();
+            //     InitStaggerUIList();
+            // });
+            //
+            //
+            //
+            // var enableInit = _serializedTargetObject.AnimationClip && _serializedTargetObject.TargetObject;
+            // SetTransformCash.SetEnabled(enableInit);
+            //
+            //
+            // animationProps.SetEnabled(enableInit && _serializedTargetObject.ChildTransformCashCount > 0);
+            // root.Query<Foldout>("StaggerSliderFoldout").First().value = animationProps.enabledSelf;
+            // root.Query<Foldout>("TransformCalcType").First().value = animationProps.enabledSelf;
+            //
 
-            root.Query<CurveField>("DurationCurve").First().RegisterValueChangedCallback((evt) =>
-            {
-                _serializedTargetObject.InitStaggerValues();
-                InitStaggerUIList();
-            });
-
-
-
-            var enableInit = _serializedTargetObject.AnimationClip && _serializedTargetObject.TargetObject;
-            SetTransformCash.SetEnabled(enableInit);
-            
-            
-            animationProps.SetEnabled(enableInit && _serializedTargetObject.ChildTransformCashCount > 0);
-            root.Query<Foldout>("StaggerSliderFoldout").First().value = animationProps.enabledSelf;
-            root.Query<Foldout>("TransformCalcType").First().value = animationProps.enabledSelf;
-            
-
-        return root;
+             return root;
         }
 
         private void InitStaggerUIList()
         {
-            var minMaxSliderElement = Resources.Load<VisualTreeAsset>("MinMaxDurationSlider");
-            staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
+            var animationStaggerUI = Resources.Load<VisualTreeAsset>("BaseStaggerUI");
+            staggerList = root.Query<VisualElement>("AnimationStaggerList").First();
             var count = 0;
-            foreach (var staggerProps in _serializedTargetObject.StaggerPropsList)
+            staggerList.Clear();
+            foreach (var animationStagger in _serializedTargetObject.animationStaggers)
             {
-                if (staggerPropList.childCount <= count)
+                if (staggerList.childCount <= count)
                 {
-                    var clone = minMaxSliderElement.CloneTree();
-                    var animationClipField = clone.Query<ObjectField>("AnimationClipField").First();
-                    animationClipField.objectType = typeof(AnimationClip);
-                    animationClipField.RegisterValueChangedCallback((evt =>
-                    {
-                        if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual)
-                        {
-                            staggerProps.assignedManualAnimationClip = (AnimationClip) animationClipField.value;
-                        }
-                        if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Random)
-                        {
-                            staggerProps.assignedRandomAnimationClip = (AnimationClip) animationClipField.value;
-                        }
-                        
-                        if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual)
-                        {
-                            staggerProps.assignedSingleAnimationClip = (AnimationClip) animationClipField.value;
-                        }
-
-                    }));
-                    SetUpStaggerElement(clone, count, staggerProps.name);
-                    staggerPropList.Add(clone);     
+                    var clone = animationStaggerUI.CloneTree();
+                    
+                    SetUpStaggerElement(clone, animationStagger);
+                    staggerList.Add(clone);     
                 }
-                else
-                {
-                    UpdateStaggerElement(staggerPropList.Children().ElementAt(count),staggerProps);
-                }
-               
-                
                 count++;
             }
+
+            if (staggerList.childCount > _serializedTargetObject.animationStaggers.Count)
+            {
+                staggerList.RemoveAt(0);
+            }
+            
+            UpdateStaggerList();
         }
 
-        private void UpdateStaggerListProps(List<StaggerPropsBehaviour> staggerPropsList, VisualElement root)
+        private void UpdateStaggerList()
         {
             // var staggerPropList = root.Query<VisualElement>("StaggerPropList").First();
             var count = 0;
-            foreach (var child in staggerPropList.Children())
+            foreach (var child in staggerList.Children())
             {
-                var values = staggerPropsList[count];
-                // Debug.Log(values.startTiming);
-                UpdateStaggerElement(child, values);
+                var visualElement =child;
+                UpdateStaggerElement(visualElement, _serializedTargetObject.animationStaggers[count]);
                 count++;
-            }
+            }   
         }
 
         // private void OnChangeMode()
@@ -283,133 +279,132 @@ namespace UMotionGraphicUtilities
         //     
         // }
 
-        private void UpdateStaggerElement(VisualElement root, StaggerPropsBehaviour staggerProps)
+        private void UpdateStaggerElement(VisualElement element, AnimationStagger animationStagger)
         {
             
             
-            // Debug.Log(values.startTiming);
-            root.Query<FloatField>("Start").First().value = staggerProps.startTiming;
-            root.Query<FloatField>("End").First().value = staggerProps.endTiming;
-            root.Query<FloatField>("LowLimit").First().value = staggerProps.lowLimit;
-            root.Query<FloatField>("HighLimit").First().value = staggerProps.highLimit;
-            var minMaxSlider = root.Query<MinMaxSlider>("MinMaxSlider").First();
-            var animationClipField = root.Query<ObjectField>("AnimationClipField").First();
-            animationClipField.value = staggerProps.PickAnimationClipByMode(_serializedTargetObject.AnimationClipMode);
-            animationClipField.SetEnabled(_serializedTargetObject.AnimationClipMode == AnimationClipMode.Manual);
-            minMaxSlider.highLimit = staggerProps.highLimit;
-            minMaxSlider.lowLimit = staggerProps.lowLimit;
-            minMaxSlider.maxValue = staggerProps.currentStaggerType == StaggerType.Custom ? staggerProps.endTimingCustom : staggerProps.endTiming;
-            minMaxSlider.minValue = staggerProps.currentStaggerType == StaggerType.Custom ? staggerProps.startTimingCustom : staggerProps.startTiming;
+            var nameField = element.Q<Label>("NameField");
+            nameField.text = animationStagger.name;
+            element.Q<FloatField>("Start").value = animationStagger.staggerType == StaggerType.Custom ? animationStagger.startTimingCustom: animationStagger.startTiming;
+            element.Q<FloatField>("End").value = animationStagger.staggerType == StaggerType.Custom ? animationStagger.endTimingCustom : animationStagger.endTiming;
+            element.Q<FloatField>("LowLimit").value = animationStagger.lowLimit;
+            element.Q<FloatField>("HighLimit").value = animationStagger.highLimit;
+            var minMaxSlider = element.Q<MinMaxSlider>("MinMaxSlider");
+            
+            var animationClipListField = element.Q<ListView>("AssignedAnimationClipListField");
+            animationClipListField.Clear();
+            // if (_serializedTargetObject.AnimationClipMode == AnimationClipMode.Multiple)
+            // {
+            //            
+            //     foreach (var a in animationStagger.assignedMultipleAnimationClip)
+            //     {
+            //         var field = new ObjectField();
+            //         field.objectType = typeof(AnimationClip);
+            //         field.value = a;
+            //         animationClipListField.Add(field);
+            //     }
+            //             
+            // }
+            // else
+            // {
+            //     var field = new ObjectField();
+            //     field.objectType = typeof(AnimationClip);
+            //     field.value = animationStagger.PickSingleAnimationClipByMode();
+            //     // animationClipListField.Add(field);
+            // }
+            // minMaxSlider.highLimit = animationStagger.highLimit;
+            // minMaxSlider.lowLimit = animationStagger.lowLimit;
+            // minMaxSlider.maxValue = animationStagger.staggerType == StaggerType.Custom ? animationStagger.startTimingCustom: animationStagger.endTiming;
+            // minMaxSlider.minValue = animationStagger.staggerType == StaggerType.Custom ? animationStagger.endTimingCustom : animationStagger.startTiming;
             
         }
         
 
-        private void SetUpStaggerElement(VisualElement root, int index, string childName)
+        private void SetUpStaggerElement(VisualElement staggerElement, AnimationStagger animationStagger)
         {
-            var target = serializedObject.targetObject as AnimationClipTransfer;
-            var staggerProps = target.StaggerPropsList[index];
-            var startField = root.Query<FloatField>("Start").First();
+            if(animationStagger == null) return;
+            var nameField = staggerElement.Q<Label>("NameField");
+            nameField.text = animationStagger.name;
+            var start = staggerElement.Q<FloatField>("Start");
+            start.value = animationStagger.staggerType  == StaggerType.Custom ? animationStagger.startTimingCustom : animationStagger.startTiming;
+            var end = staggerElement.Q<FloatField>("End");
+            end.value = animationStagger.staggerType  == StaggerType.Custom ? animationStagger.endTimingCustom: animationStagger.endTiming;
+            var low = staggerElement.Q<FloatField>("LowLimit");
+            low.value = animationStagger.lowLimit;
+            var high = staggerElement.Q<FloatField>("HighLimit");
+            high.value = animationStagger.highLimit;
+            var minMaxSlider = staggerElement.Q<MinMaxSlider>("MinMaxSlider");
+            minMaxSlider.value = new Vector2(
+                start.value,
+                end.value
+            );
 
-
-            root.Query<Label>("Name").First().text = childName;
-                
-                
-            startField.value = staggerProps.currentStaggerType == StaggerType.Random ? staggerProps.startTimingCustom : staggerProps.startTiming;
-            // delayField.RegisterCallback().;
-            startField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
+            start.RegisterValueChangedCallback((evt =>
             {
-                
-                var v = evt.newValue;
-                if (staggerProps.lowLimit > evt.newValue)
-                    v = evt.previousValue;
-
-                if (staggerProps.currentStaggerType == StaggerType.Custom)
+                if (animationStagger.staggerType == StaggerType.Custom)
                 {
-                    staggerProps.startTimingCustom = evt.newValue;
+                    animationStagger.startTimingCustom = evt.newValue;
+                    minMaxSlider.value = new Vector2(
+                        animationStagger.startTimingCustom,
+                        animationStagger.endTimingCustom
+                    );
                 }
                 else
                 {
-                    staggerProps.startTiming = evt.newValue;
+                    animationStagger.startTiming = evt.newValue;
+                    minMaxSlider.value = new Vector2(
+                        animationStagger.startTiming,
+                        animationStagger.endTiming
+                    );
                 }
-                root.Query<MinMaxSlider>().First().value = new Vector2(staggerProps.startTiming, staggerProps.endTiming);
-         
-
-            });
-
-            var endField = root.Query<FloatField>("End").First();
-            endField.value = staggerProps.currentStaggerType == StaggerType.Random ? staggerProps.endTimingCustom : staggerProps.endTiming;
-            endField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
-            {
-                var v = evt.newValue;
-                if (staggerProps.highLimit < evt.newValue)
-                    v = evt.previousValue;
-                if (staggerProps.currentStaggerType == StaggerType.Custom)
-                {
-                    staggerProps.endTimingCustom = v;
-                }
-                else
-                {
-                    staggerProps.endTiming = v;
-                }
-                root.Query<MinMaxSlider>().First().value = new Vector2(staggerProps.startTiming, staggerProps.endTiming);
-            });
-
-
-            var lowLimitField = root.Query<FloatField>("LowLimit").First();
-            lowLimitField.value = staggerProps.lowLimit;
-            lowLimitField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
-            {
-                
                
-                staggerProps.lowLimit = evt.newValue;
-                root.Query<MinMaxSlider>().First().lowLimit = evt.newValue;
-
-
-            });
-
-            var highLimitField = root.Query<FloatField>("HighLimit").First();
-            highLimitField.value = staggerProps.highLimit;
-            highLimitField.RegisterCallback<ChangeEvent<float>>((ChangeEvent<float> evt) =>
-            {
-                staggerProps.highLimit = evt.newValue;
-                root.Query<MinMaxSlider>().First().highLimit = evt.newValue;
-            });
-
-
+                
+            }));
             
-           
+            
+            end.RegisterValueChangedCallback((evt =>
+            {
+                
+                if (animationStagger.staggerType == StaggerType.Custom)
+                {
+                    animationStagger.endTimingCustom = evt.newValue;
+                    minMaxSlider.value = new Vector2(
+                        animationStagger.startTimingCustom,
+                        animationStagger.endTimingCustom
+                    );
+                }
+                else
+                {
+                    animationStagger.endTiming = evt.newValue;
+                    minMaxSlider.value = new Vector2(
+                        animationStagger.startTiming,
+                        animationStagger.endTiming
+                    );
+                }
+            }));
+            
+            
+            high.RegisterValueChangedCallback((evt =>
+            {
+                animationStagger.highLimit = evt.newValue;
+                minMaxSlider.highLimit = evt.newValue;
+            }));
+            
+            
+            low.RegisterValueChangedCallback((evt =>
+            {
+                animationStagger.lowLimit = evt.newValue;
+                minMaxSlider.lowLimit = evt.newValue;
+            }));
 
-           
-            var minMaxSlider = root.Query<MinMaxSlider>("MinMaxSlider").First();
-            minMaxSlider.lowLimit = lowLimitField.value;
-            minMaxSlider.highLimit = highLimitField.value;
-            minMaxSlider.minValue = startField.value;
-            minMaxSlider.maxValue = endField.value;
+
             minMaxSlider.RegisterValueChangedCallback((evt) =>
             {
-                var target = serializedObject.targetObject as AnimationClipTransfer;
-                var staggerProps = target.StaggerPropsList[index];
-                // Debug.Log(evt.newValue.x);
-                startField.SetValueWithoutNotify(evt.newValue.x);
-                endField.SetValueWithoutNotify(evt.newValue.y);
-                if (staggerProps.currentStaggerType == StaggerType.Custom)
-                {
-                    staggerProps.startTimingCustom = evt.newValue.x;
-                }
-                else
-                {
-                    staggerProps.startTiming = evt.newValue.x;
-                }
-                if (staggerProps.currentStaggerType == StaggerType.Custom)
-                {
-                    staggerProps.endTimingCustom = evt.newValue.y;
-                }
-                else
-                {
-                    staggerProps.endTiming = evt.newValue.y;
-                }
-                serializedObject.ApplyModifiedProperties();
-                // Debug.Log(staggerProps.startTiming);
+               
+                start.value = evt.newValue.x;
+                end.value = evt.newValue.y;    
+                
+                
             });
         }
     }

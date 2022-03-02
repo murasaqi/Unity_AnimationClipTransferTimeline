@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement style="flex-direction: row; justify-content: space-between;">
+        <ui:VisualElement style="width: 30%; flex-direction: row; align-items: stretch; justify-content: space-between;">
+            <ui:Label text="Target child" display-tooltip-when-elided="true" style="-unity-text-align: middle-left;" />
+            <ui:DropdownField index="0" choices="System.Collections.Generic.List`1[System.String]" text="Target child index" name="IndexList" binding-path="targets" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-direction: row; align-items: auto; width: 60%; justify-content: flex-end;">
+            <uie:ObjectField binding-path="clip" name="AnimationClipField" usage-hints="DynamicTransform" focusable="false" style="margin-top: 2px; margin-bottom: 2px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,46 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <uie:ObjectField label="Target Object" name="TargetObject" binding-path="targetObject" style="-unity-font-style: bold;" />
+    <uie:ObjectField label="Profile" name="ProfileField" binding-path="animationClipTransferProfile" style="-unity-font-style: bold;" />
+    <ui:VisualElement name="ButtonsField" view-data-key="InitButton" style="align-items: stretch; margin-top: 4px; margin-bottom: 4px; flex-direction: row; justify-content: center; flex-wrap: nowrap;">
+        <ui:Button text="Create" display-tooltip-when-elided="true" name="CreateButton" binding-path="Init" style="color: rgb(82, 219, 194); width: 30%; align-items: center; flex-direction: row-reverse; flex-wrap: wrap-reverse;" />
+        <ui:Button text="Save" display-tooltip-when-elided="true" name="SaveButton" binding-path="Init" style="color: rgb(82, 219, 194); width: 30%; align-items: center; flex-direction: row-reverse; flex-wrap: wrap-reverse;" />
+        <ui:Button text="Load" display-tooltip-when-elided="true" name="LoadButton" binding-path="Init" style="color: rgb(82, 219, 194); width: 30%; align-items: center; flex-direction: row-reverse; flex-wrap: wrap-reverse;" />
+    </ui:VisualElement>
+    <uie:EnumField label="Mode" value="Center" binding-path="animationClipMode" name="AnimationClipMode" include-obsolete-values="false" />
+    <ui:ListView focusable="true" binding-path="numberedAnimationClips" name="AnimationClipsField" header-title="Animation Clips" show-foldout-header="true" selection-type="Multiple" show-add-remove-footer="true" reorderable="false" reorder-mode="Simple" horizontal-scrolling="true" usage-hints="DynamicTransform" show-border="true" show-alternating-row-backgrounds="All" virtualization-method="DynamicHeight" />
+    <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: center; margin-top: 3px;">
+        <ui:Button text="Assign" display-tooltip-when-elided="true" name="AssignButton" style="max-width: 200px; align-items: center; width: 30%;" />
+    </ui:VisualElement>
+    <ui:Foldout text="Transform Update Mode">
+        <ui:VisualElement name="TransfromCalcElements" style="flex-direction: row; justify-content: space-around;">
+            <uie:EnumField label="Position" value="Center" binding-path="positionCalcType" name="PositionCalcTypeField" style="flex-direction: column; align-items: stretch; justify-content: flex-start; width: 30%;" />
+            <uie:EnumField label="Rotation" value="Center" binding-path="eulerCalcType" name="PositionCalcTypeField" style="flex-direction: column; width: 30%;" />
+            <uie:EnumField label="Scale" value="Center" binding-path="scaleCalcType" name="PositionCalcTypeField" style="flex-direction: column; width: 30%;" />
+        </ui:VisualElement>
+    </ui:Foldout>
+    <ui:VisualElement name="AnimationProps" view-data-key="AnimationProps">
+        <ui:VisualElement name="TransformCash" />
+        <ui:Foldout text="Debug" name="DebugFoldout" value="true" view-data-key="DebugFoldout" style="-unity-font-style: bold;">
+            <ui:Toggle label="Debug Mode" name="DebugMode" binding-path="debugMode" style="color: rgb(74, 255, 229); -unity-font-style: normal;" />
+            <ui:VisualElement name="DebugPlayer">
+                <ui:VisualElement name="PlayerButtons" style="flex-direction: row;">
+                    <ui:VisualElement name="Duration" style="justify-content: space-between; flex-direction: row; align-items: center; margin-left: 4px; margin-right: 4px;">
+                        <ui:Slider picking-mode="Ignore" value="0" high-value="1" name="DebugProgress" binding-path="debugProgress" style="min-width: auto; width: 86%;" />
+                        <uie:FloatField value="1" binding-path="debugProgress" name="DebugDuration" style="min-width: auto; max-width: 60px; width: 10%;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:Foldout>
+        <ui:Foldout text="Transform Calc Type" name="TransformCalcType" value="false" view-data-key="TransformCalcType" style="-unity-font-style: bold;">
+            <uie:EnumField label="Position" value="Center" name="PositionCalcType" binding-path="positionCalcType" />
+            <uie:EnumField label="Rotation" value="Center" name="EulerCalcType" binding-path="eulerCalcType" />
+            <uie:EnumField label="Scale" value="true" name="ApplyChildrenButton" binding-path="scaleCalcType" />
+        </ui:Foldout>
+        <ui:Foldout text="Stagger Settings" name="StaggerSliderFoldout" value="true" view-data-key="StaggerSliderFoldout" style="cursor: initial; -unity-font-style: bold; flex-direction: column; margin-left: 3px; margin-right: 3px; margin-top: 1px; margin-bottom: 1px;">
+            <uie:EnumField label="Stagger Type" value="Center" name="StaggerType" binding-path="staggerType" />
+            <ui:Slider picking-mode="Ignore" label="Stagger Ratio" value="42" high-value="1" binding-path="staggerRatio" name="StaggerRatio" />
+            <ui:VisualElement name="AnimationStaggerList" binding-path="animationClips" label="Profile" style="margin-left: 0; margin-right: 0; margin-top: 8px; margin-bottom: 3px; height: auto; border-left-width: 0; border-right-width: 0; border-top-width: 0; border-bottom-width: 0; -unity-text-outline-width: 0; -unity-text-outline-color: rgb(178, 178, 178); -unity-background-image-tint-color: rgb(19, 19, 19); background-color: rgb(42, 42, 42); -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; -unity-background-scale-mode: scale-and-crop; scale: 1 1; border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px;" />
+        </ui:Foldout>
+    </ui:VisualElement>
+    <uie:PropertyField binding-path="animationStaggers" style="-unity-slice-left: 1; -unity-slice-top: 1; -unity-slice-right: 1; -unity-slice-bottom: 1;" />
+</ui:UXML>

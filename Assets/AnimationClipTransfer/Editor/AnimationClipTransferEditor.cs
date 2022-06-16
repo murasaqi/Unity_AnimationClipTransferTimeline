@@ -48,7 +48,7 @@ namespace UMotionGraphicUtilities
 
             var profileField = root.Q<ObjectField>("ProfileField");
             profileField.objectType = typeof(AnimationClipTransferProfile);
-
+            animationProps = root.Q<VisualElement>("AnimationProps");
             // -------------------------------- Button Event ------------------------------------ //
             createProfileButton = root.Q<Button>("CreateButton");
             createProfileButton.SetEnabled(_serializedTargetObject.animationClipTransferProfile == null);

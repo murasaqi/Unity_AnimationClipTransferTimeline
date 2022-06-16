@@ -1,9 +1,8 @@
 
-using System;
 using System.Collections.Generic;
-using System.Timers;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace UMotionGraphicUtilities
@@ -11,29 +10,43 @@ namespace UMotionGraphicUtilities
     [ExecuteAlways]
     public class AnimationClipTransfer : MonoBehaviour
     {
+        [SerializeField] private GameObject targetObject;
+        [SerializeField] public AnimationClipTransferProfile animationClipTransferProfile;
+        [SerializeField] private AnimationClipMode animationClipMode = AnimationClipMode.Single;
+        [SerializeField] private List<NumberedAnimationClip> numberedAnimationClips = new List<NumberedAnimationClip>();
+        
+        [SerializeField] private ValueCalcType positionCalcType = ValueCalcType.Add;
+        [SerializeField] private ValueCalcType eulerCalcType = ValueCalcType.Add;
+        [SerializeField] private ValueCalcType scaleCalcType = ValueCalcType.Multiply;
+        [SerializeField] private StaggerType staggerType = StaggerType.AutoInOut;
+        [SerializeField] private float staggerRatio = 0.3f;
+        [SerializeField] public List<AnimationStagger> animationStaggers =new List<AnimationStagger>();
 
-        [HideInInspector] [SerializeField] private AnimationClip animationClip;
-        [HideInInspector] [SerializeField] private GameObject targetObject;
-        // [SerializeField] private AnimationTargetType animationTargetType;
-        // [SerializeField] private bool toggleActiveOnClip;
-        [HideInInspector] [SerializeField] private ValueCalcType positionCalcType = ValueCalcType.Add;
-        [HideInInspector] [SerializeField] private ValueCalcType eulerCalcType = ValueCalcType.Add;
-        [HideInInspector] [SerializeField] private ValueCalcType scaleCalcType = ValueCalcType.Multiply;
-        [HideInInspector] [SerializeField] private StaggerType staggerType = StaggerType.AutoInOut;
-        [HideInInspector] [SerializeField] private List<StaggerPropsBehaviour> staggerPropsList =new List<StaggerPropsBehaviour>();
-        // [SerializeField] private StaggerOption staggerOption;
-        [HideInInspector] [SerializeField] private float staggerRatio = 0.3f;
-        // [SerializeField] private TransformCash transformCash = null;
-        [SerializeField] private List<TransformCash> childTransformCash = new List<TransformCash>();
-        [HideInInspector] [SerializeField] private bool debugMode = false;
-        [HideInInspector] [SerializeField] [Range(0, 1)] private float debugProgress;
-        [HideInInspector] [SerializeField] private AnimationCurve durationCurve;
-        // [SerializeField] private float randomSeed = 123;
-        [HideInInspector] [SerializeField] private float debugDuration = 1;
-        // private Animation debugAnimation;
-        // private float _previousProgress = 0;
-        // private float _timer = 0f;
-        // [HideInInspector] public bool isDebugPlay = false;
+        [SerializeField] private bool debugMode = false;
+        [SerializeField] [Range(0, 1)] private float debugProgress;
+        [SerializeField] [Range(0, 1)] private float progress;
+
+
+        private List<string> targetDropdownList = new List<string>();
+        public AnimationClipMode AnimationClipMode
+        {
+            get => animationClipMode;
+            set
+            {
+                animationClipMode = value;
+            }
+        }
+        public AnimationClipTransferProfile AnimationClipTransferProfile
+
+        {
+            set => animationClipTransferProfile = value;
+        }
+        public delegate void OnInitDelegate();
+        public event OnInitDelegate OnInitHandler; 
+        
+        public delegate void OnResetChildTransformDelegate();
+        public event OnInitDelegate OnResetChildTransformHandler; 
+        
         public bool DebugMode
         {
             get => debugMode;
@@ -47,18 +60,12 @@ namespace UMotionGraphicUtilities
                 if (targetObject != value)
                 {
                     targetObject = value;
-                    Init();
+                    InitAnimationStaggerList();
                 }
             }
         }
-
-        public AnimationClip AnimationClip
-        {
-            get => animationClip;
-            set => animationClip = value;
-        }
-
-        public int ChildTransformCashCount => childTransformCash.Count;
+        
+        // public int ChildTransformCashCount => childTransformCash.Count;
 
         public StaggerType StaggerType
         {
@@ -66,326 +73,427 @@ namespace UMotionGraphicUtilities
             set => staggerType = value;
         }
 
-        public List<StaggerPropsBehaviour> StaggerPropsList => staggerPropsList;
+        // public List<AnimationStagger> AnimationStaggers => animationStaggers;
 
         // Start is called before the first frame update
         void Start()
         {
+            InitAnimationStaggerList();
         }
 
         private void OnEnable()
         {
-            // Init();
+            InitAnimationStaggerList();
+            
         }
 
         private void OnValidate()
         {
             
         }
-        
-        public void Init()
-        {
-            if (targetObject == null) return;
-         
-            var count = 0;
-            foreach (var key in durationCurve.keys)
-            {
-                durationCurve.RemoveKey(count);
-            }
-            durationCurve.AddKey(0, 1);
-            durationCurve.AddKey(1, 1);
 
-            childTransformCash.Clear();
+        public void SaveCash()
+        {
+            InitAnimationStaggerList();
+            if (animationStaggers.Count > 0)
+            {
+                if (animationClipTransferProfile.cashs == null) animationClipTransferProfile.cashs = new List<AnimationStaggerElementCash>();
+                animationClipTransferProfile.cashs.Clear();
+
+                foreach (var animationStagger in animationStaggers)
+                {
+                    var cash = new AnimationStaggerElementCash();
+                    cash.startTiming = animationStagger.startTiming;
+                    cash.endTiming = animationStagger.endTiming;
+                    cash.startTimingCustom = animationStagger.startTimingCustom;
+                    cash.endTimingCustom = animationStagger.endTimingCustom;
+                    cash.lowLimit = animationStagger.lowLimit;
+                    cash.highLimit = animationStagger.highLimit;
+                    cash.assignedSingleAnimationClip = animationStagger.assignedSingleAnimationClip;
+                    cash.assignedRandomAnimationClip = animationStagger.assignedRandomAnimationClip;
+                    cash.assignedMultipleAnimationClip = animationStagger.assignedMultipleAnimationClip;
+                    cash.assignedMultipleAnimationClip = animationStagger.assignedMultipleAnimationClip;
+                    cash.animationClipMode = animationStagger.animationClipMode;
+                    cash.valueCalcType_Position = animationStagger.valueCalcType_Position;
+                    cash.valueCalcType_Rotation = animationStagger.valueCalcType_Rotation;
+                    cash.valueCalcType_Scale = animationStagger.valueCalcType_Scale;
+                    // cash.animationClipCue = ;
+                    animationStagger.SetTransformCash();
+                    cash.transformCash = animationStagger.transformCash;
+                    animationClipTransferProfile.cashs.Add(cash);
+                }
+            }
+        }
+
+        public void UpdateProfile()
+        {
+            if(animationClipTransferProfile == null ) return;
+            if (animationClipTransferProfile.cashs == null) animationClipTransferProfile.cashs = new List<AnimationStaggerElementCash>();
+
+            var count = 0;
+            foreach (var animationStagger in animationStaggers)
+            {
+                AnimationStaggerElementCash cash;
+
+                if (animationClipTransferProfile.cashs.Count < count)
+                {
+                    cash = animationClipTransferProfile.cashs[count];
+                }
+                else
+                {
+                    cash = new AnimationStaggerElementCash();
+                    animationClipTransferProfile.cashs.Add(cash);
+                }
+                 
+                cash.startTiming = animationStagger.startTiming;
+                cash.endTiming = animationStagger.endTiming;
+                cash.startTimingCustom = animationStagger.startTimingCustom;
+                cash.endTimingCustom = animationStagger.endTimingCustom;
+                cash.lowLimit = animationStagger.lowLimit;
+                cash.highLimit = animationStagger.highLimit;
+                cash.assignedSingleAnimationClip = animationStagger.assignedSingleAnimationClip;
+                cash.assignedRandomAnimationClip = animationStagger.assignedRandomAnimationClip;
+                cash.assignedMultipleAnimationClip = animationStagger.assignedMultipleAnimationClip;
+                cash.assignedMultipleAnimationClip = animationStagger.assignedMultipleAnimationClip;
+                cash.animationClipMode = animationStagger.animationClipMode;
+                cash.valueCalcType_Position = animationStagger.valueCalcType_Position;
+                cash.valueCalcType_Rotation = animationStagger.valueCalcType_Rotation;
+                cash.valueCalcType_Scale = animationStagger.valueCalcType_Scale;
+                // animationStagger.SetTransformCash();
+                // cash.transformCash = animationStagger.transformCash;
+            }
+        }
+        
+        public int GetAllChildCount(Transform parent)
+        {
+            var all =parent.GetComponentsInChildren<Transform>();
+            return all.Length; // 親をスキップする
+        }
+        public void InitAnimationStaggerList()
+        {
+            
+            Debug.Log("Init:AnimationClipTransfer");
+            if (targetObject == null) return;
+            
+            
+            animationStaggers.Clear();
+            var minChildCount = 999999;
+            
             foreach (Transform child in targetObject.transform)
             {
-                var cash = new TransformCash();
-                cash.OwnTransform = child;
-                cash.LocalPosition = child.localPosition;
-                cash.LocalEulerAngle = child.localEulerAngles;
-                cash.LocalScale = child.localScale;
-                cash.Progress = -1f;
-                childTransformCash.Add(cash);
+
+                var childCount = GetAllChildCount(child);
+                if (minChildCount > childCount)
+                    minChildCount = childCount;
+                var animationStagger =  child.gameObject.GetComponent<AnimationStagger>();
+                if (animationStagger == null) child.gameObject.AddComponent<AnimationStagger>();
+                animationStaggers.Add(animationStagger);
             }
 
-            InitStaggerValues();
+            
+            targetDropdownList.Clear();
+            for (int i = 0; i < minChildCount; i++)
+            {
+                var name = "";
+                name += i.ToString();
+                if (i == 0) name += " (root)";
+                targetDropdownList.Add(name);
+            }
+
+            foreach (var numberedAnimationClip in numberedAnimationClips)
+            {
+                numberedAnimationClip.targets = targetDropdownList;
+            }
 
         }
 
         public void ResetChildTransform()
         {
-            debugProgress = 0;
-            foreach (var cash in childTransformCash)
+            progress = 0;
+            foreach (var cash in animationStaggers)
             {
-                cash.ResetTransform();
+                cash.Reset();
             }
+            OnResetChildTransformHandler?.Invoke();
         }
+
+        public void AssignAnimationClip()
+        {
+            
+            foreach (var staggerProps in animationStaggers)
+            {
+                if (numberedAnimationClips != null && numberedAnimationClips.Count > 0)
+                {
+                    staggerProps.assignedManualAnimationClip = numberedAnimationClips.First();
+                    staggerProps.assignedSingleAnimationClip = numberedAnimationClips.First();
+                    
+                    staggerProps.assignedRandomAnimationClip = numberedAnimationClips[Random.Range(0, numberedAnimationClips.Count)];
+                    staggerProps.assignedMultipleAnimationClip.Clear();
+
+                    foreach (var a in numberedAnimationClips)
+                    {
+                        staggerProps.assignedMultipleAnimationClip.Add(a);
+                    }
+                }
+
+                staggerProps.animationClipMode = animationClipMode;
+
+
+            }
+        
+          
+        }
+
+        public void AssignRandomAnimationClip()
+        {
+            if (numberedAnimationClips == null || numberedAnimationClips.Count == 0)
+            {
+                numberedAnimationClips = new List<NumberedAnimationClip>();
+                // numberedAnimationClips.Add(numberedAnimationClips.First());
+            }
+            else
+            {
+                if (animationClipMode == AnimationClipMode.Random)
+                {
+                    foreach (var staggerProps in animationStaggers)
+                    {
+                        staggerProps.assignedRandomAnimationClip = numberedAnimationClips[Random.Range(0, numberedAnimationClips.Count)];
+                    }
+                }       
+            }
+         
+            
+        }
+        
+        public void AssignMultipleAnimationClip()
+        {
+           
+            if (animationClipMode == AnimationClipMode.Random)
+            {
+                foreach (var staggerProps in animationStaggers)
+                {
+                    if (staggerProps.assignedMultipleAnimationClip == null)
+                        staggerProps.assignedMultipleAnimationClip = new List<NumberedAnimationClip>();
+
+                    if (numberedAnimationClips != null && numberedAnimationClips.Count > 0)
+                    {
+                        foreach (var animationClip in numberedAnimationClips)
+                        {
+                            staggerProps.assignedMultipleAnimationClip.Add(animationClip);
+                        }
+                    }
+                    
+                }
+            }
+            
+        }
+
+        public void AssignSingleAnimationClip()
+        {
+            
+            if (animationClipMode == AnimationClipMode.Single)
+            {
+                if (numberedAnimationClips != null && numberedAnimationClips.Count > 0) 
+                foreach (var staggerProps in animationStaggers)
+                {
+                    staggerProps.assignedSingleAnimationClip= numberedAnimationClips.First();
+                }
+            }
+
+        }
+        
+        
 
         public void InitStaggerValues()
         {
             if(targetObject == null) return;
-            var childLength = targetObject.transform.childCount;
+            // var childLength = targetObject.transform.childCount;
             var childCount = 0;
+
             
-            foreach (Transform child in targetObject.transform)
+            
+            
+
+            if (animationClipMode == AnimationClipMode.Single)
             {
-                
-                var ratio = staggerRatio *durationCurve.Evaluate((float)childCount/(float)(targetObject.transform.childCount-1));
-                ratio = Mathf.Clamp(ratio,0f, 1f);
-                Debug.Log(ratio);
-                // 
-                var ratioStep = ratio / (targetObject.transform.childCount - 1);
+               AssignSingleAnimationClip();
+            }
+            if (animationClipMode == AnimationClipMode.Random)
+            {
+                AssignRandomAnimationClip();
+            }
+            if (animationClipMode == AnimationClipMode.Multiple)
+            {
+                AssignMultipleAnimationClip();
+            }
 
-                
-                StaggerPropsBehaviour staggerPropsBehaviour;
-                if (staggerPropsList.Count <= childCount)
-                {
-                    staggerPropsBehaviour = new StaggerPropsBehaviour();
-                    staggerPropsList.Add(staggerPropsBehaviour);
-                }
+           
+            foreach (var animationStagger in animationStaggers)
+            {
+               
+                var  duration = Mathf.Clamp(staggerRatio,0f, 1f);
+                var delay = 1f - duration;
+                var delayStep = (1f-duration) / (animationStaggers.Count - 1);
+                animationStagger.animationClipMode = animationClipMode;
+                animationStagger.staggerType = staggerType;
 
-                staggerPropsBehaviour = staggerPropsList[childCount];
-                staggerPropsBehaviour.name = $"{childCount}: {child.gameObject.name}";
-                
-                // staggerPropsBehaviour.RandomSeed = Random.Range()
-                if (staggerType != StaggerType.Custom)
+                animationStagger.valueCalcType_Position = positionCalcType;
+                animationStagger.valueCalcType_Rotation = eulerCalcType;
+                animationStagger.valueCalcType_Scale = scaleCalcType;
+                 if (staggerType == StaggerType.Custom)
                 {
-                    
+                    animationStagger.lowLimit = 0;
+                    animationStagger.highLimit = 1;
+                    var pivot = (animationStagger.startTimingCustom + animationStagger.endTimingCustom) / 2f;
+                    animationStagger.startTimingCustom = Mathf.Max(pivot-duration/2f,0f);
+                    animationStagger.endTimingCustom = Mathf.Min(pivot+duration/2f,1);
                 }
                 if (staggerType == StaggerType.Random)
                 {
-                    var childStart = Random.Range(0,ratio);
-                    var childEnd = childStart + (1f - ratio);
+                    var childStart = Random.Range(0,delay);
+                    var childEnd = childStart + duration;
                     
-                    staggerPropsBehaviour.lowLimit = 0;
-                    staggerPropsBehaviour.highLimit = 1;
-                    staggerPropsBehaviour.startTiming = childStart;
-                    staggerPropsBehaviour.endTiming = childEnd;
+                    animationStagger.lowLimit = 0;
+                    animationStagger.highLimit = 1;
+                    animationStagger.startTiming = childStart;
+                    animationStagger.endTiming = childEnd;
                 }
                 
                 if (staggerType == StaggerType.RandomPerlin)
                 {
-                    var childStart = Mathf.PerlinNoise(childCount*ratio, staggerPropsBehaviour.RandomSeed*ratio) *ratio;
-                    var childEnd = childStart + (1f - ratio);
+                    var childStart = Mathf.PerlinNoise(childCount*staggerRatio, animationStagger.randomSeed*staggerRatio) *delay;
+                    var childEnd = childStart + duration;
                     
-                    staggerPropsBehaviour.lowLimit = 0;
-                    staggerPropsBehaviour.highLimit = 1;
-                    staggerPropsBehaviour.startTiming = childStart;
-                    staggerPropsBehaviour.endTiming = childEnd;
+                    animationStagger.lowLimit = 0;
+                    animationStagger.highLimit = 1;
+                    animationStagger.startTiming = childStart;
+                    animationStagger.endTiming = childEnd;
                 }
-                if(staggerType != StaggerType.Random && staggerType != StaggerType.Custom && staggerType != StaggerType.RandomPerlin)
+                if(staggerType == StaggerType.AutoInOut)
                 {
                     // if (staggerType == StaggerType.AutoInOut) ratioStep *= 0.5f;
-                    var isIn = (staggerType == StaggerType.AutoIn || staggerType == StaggerType.AutoInOut);
-                    var isOut = staggerType == StaggerType.AutoOut || staggerType == StaggerType.AutoInOut;
-                    var childStart = isIn ? ratioStep * childCount : 0;
-                    var childEnd = isOut ? 1f - ratioStep * (childLength - 1 - childCount) : 1;
+                    // var isIn = (staggerType == StaggerType.AutoIn || staggerType == StaggerType.AutoInOut);
+                    // var isOut = staggerType == StaggerType.AutoOut || staggerType == StaggerType.AutoInOut;
+                    var childStart = delayStep * childCount;
+                    var childEnd = childStart + duration;
                     
                     
-                    staggerPropsBehaviour.lowLimit = 0;
-                    staggerPropsBehaviour.highLimit = 1;
-                    staggerPropsBehaviour.startTiming = childStart;
-                    staggerPropsBehaviour.endTiming = childEnd;
+                    animationStagger.lowLimit = 0;
+                    animationStagger.highLimit = 1;
+                    animationStagger.startTiming = childStart;
+                    animationStagger.endTiming = childEnd;
+                }
+                
+                if(staggerType == StaggerType.AutoIn)
+                {
+                    // if (staggerType == StaggerType.AutoInOut) ratioStep *= 0.5f;
+                    
+                    var childStart = delayStep * childCount;
+                    var childEnd =1f;
+                    
+                    
+                    animationStagger.lowLimit = 0;
+                    animationStagger.highLimit = 1;
+                    animationStagger.startTiming = childStart;
+                    animationStagger.endTiming = childEnd;
+                }
+                
+                if(staggerType == StaggerType.AutoOut)
+                {
+                    
+                    var childStart = 0;
+                    var childEnd = 1f-delayStep * childCount;
+                    
+                    
+                    animationStagger.lowLimit = 0;
+                    animationStagger.highLimit = 1;
+                    animationStagger.startTiming = childStart;
+                    animationStagger.endTiming = childEnd;
                 }
              
                 childCount++;
-
+            
             }
 
-            if (staggerPropsList.Count > childCount)
-            {
-                staggerPropsList.RemoveRange(childCount-1,staggerPropsList.Count- childCount);
-            }
+
+            
+            
         }
 
         // Update is called once per frame
         void Update()
         {
 
+            // if (targetObject != null)
+            // {
+            //     if (childTransformCash.Count != targetObject.transform.childCount)
+            //     {
+            //         Init();
+            //     }
+            // }
+
             if (debugMode)
             {
                 ProcessFrame(debugProgress);
             }
-            // if (targetObject != null && targetObject != null && childTransformCash == null)
-            // {
-            //     Init();
-            // }
-            // Debug.Log($"{_isDebugPlay},{debugProgress},{60f / 1000f / debugDuration}");
-           
+            
+            
+          
         }
 
         private void FixedUpdate()
         {
            
         }
-
-        public void ProcessFrame(float progress)
+        
+        public float Process => progress;
+        public void ProcessFrame(float time)
         {
-            if (animationClip == null || targetObject == null) return;
+            
+            progress = time;
+            if (numberedAnimationClips == null || targetObject == null) return;
             if(transform.childCount == 0) return;
-            ;
-            // if(staggerPropsList.Count == 0 || staggerPropsList.Count != targetObject.transform.childCount) InitStaggerValues();
-
-            if(childTransformCash.Count <= 0) Init();
-            // if (animationTargetType == AnimationTargetType.Own)
-            // {
-            //
-            //     var animation = targetObject.GetComponent<Animation>();
-            //     if (animation == null)
-            //     {
-            //         animation = targetObject.AddComponent<Animation>();
-            //     }
-            //     animation.clip = animationClip;
-            //     UpdateAnimation(transformCash, progress);
-            //
-            // }
-            //
-            // if (animationTargetType == AnimationTargetType.Children)
-            // {
-               
-            // var childLength = targetObject.transform.childCount;
+          
+            // if(childTransformCash.Count <= 0) Init();
+          
             var childCount = 0;
-
-            // InitStaggerValues();
-            foreach (Transform child in targetObject.transform)
+            
+            foreach (var child in animationStaggers)
             {
-                // var isIn = staggerOption.In;
-                // var isOut = staggerOption.Out;
-                // var childStart = isIn ? ratioStep * childCount : 0;
-                // var childEnd = isOut ? 1f - ratioStep * (childLength - 1 - childCount) : 1;
-                // Debug.Log(child.name);
 
-                var childProgress = Mathf.Clamp(Mathf.InverseLerp( staggerPropsList[childCount].startTiming,  staggerPropsList[childCount].endTiming, (float) progress), 0f, 1f);
-                // Debug.Log($"{child.name},{childProgress}");
+                child.UpdateSampleAnimation(progress);
 
-                // Debug.Log($"{child.name},{childStart},{childEnd},{childProgress}");
-                var animation = child.gameObject.GetComponent<Animation>();
-                if (animation == null)
-                {
-                    animation = child.gameObject.AddComponent<Animation>();
-                }
-                animation.clip = animationClip;
-                UpdateAnimation(childTransformCash[childCount], childProgress);
+                // var staggerProp = animationStaggers[childCount];
+                //
+                // var start = 0f;
+                // var end = 0f;
+                //
+                // if (staggerType == StaggerType.Custom)
+                // {
+                //     start = staggerProp.startTimingCustom;
+                //     end = staggerProp.endTimingCustom;
+                // }
+                // else
+                // {
+                //     start = staggerProp.startTiming;
+                //     end = staggerProp.endTiming;
+                // }
+                // var childProgress = Mathf.Clamp(Mathf.InverseLerp( start,end, (float) progress), 0f, 1f);
+                // UpdateAnimation(child, childProgress, childCount);
 
                 childCount++;
 
             }
-            // }
+           
         }
 
-        public void UpdateAnimation(TransformCash transformCash, float progress)
-        {
-            var target = transformCash.OwnTransform.gameObject;
-            // var clipAsset = clip.asset as AnimationClipTransferClip;
-            // if (toggleActiveOnClip) target.SetActive(true);
-
-
-            // if (transformCash.Progress != progress)
-            // {
-
-
-
-                // Debug.Log($"Update motion");
-                // animation.clip = input.AnimationClip;
-                // animation.enabled = true;
-                animationClip.SampleAnimation(target, progress * animationClip.averageDuration);
-                transformCash.Progress = progress;
-                // AnimationClipはなんかGetKeyできないからTransformのどこに差分があるかを初期値と比較してるやつ
-                if (target.transform.localPosition != transformCash.LocalPosition)
-                {
-                    
-                    if (positionCalcType == ValueCalcType.None)
-                    {
-                        target.transform.localPosition = transformCash.LocalPosition;
-                    }
-
-                    if (positionCalcType == ValueCalcType.Add)
-                    {
-                        target.transform.localPosition += transformCash.LocalPosition;
-                    }
-
-                    if (positionCalcType == ValueCalcType.Subtract)
-                    {
-                        target.transform.localPosition -= transformCash.LocalPosition;
-                    }
-
-                    if (positionCalcType == ValueCalcType.Multiply)
-                    {
-                        var offsetPos = target.transform.localPosition;
-                        target.transform.localPosition = Vector3.Scale(offsetPos, transformCash.LocalPosition);
-                    }
-
-                    if (positionCalcType == ValueCalcType.Acceleration)
-                    {
-                        var offsetPos = target.transform.localPosition;
-                        target.transform.localPosition = Vector3.Scale(offsetPos, transformCash.LocalPosition);
-                    }
-
-                }
-
-                if (target.transform.localEulerAngles != transformCash.LocalEulerAngle)
-                {
-                    
-                    if (eulerCalcType == ValueCalcType.None)
-                    {
-                        target.transform.localEulerAngles = transformCash.LocalEulerAngle;
-                    }
-
-                    if (eulerCalcType == ValueCalcType.Add)
-                    {
-                        target.transform.localEulerAngles += transformCash.LocalEulerAngle;
-                    }
-
-                    if (eulerCalcType == ValueCalcType.Subtract)
-                    {
-                        target.transform.localEulerAngles -= transformCash.LocalEulerAngle;
-                    }
-
-                    if (eulerCalcType == ValueCalcType.Multiply)
-                    {
-                        var offsetEuler = target.transform.localEulerAngles;
-                        target.transform.localEulerAngles = Vector3.Scale(offsetEuler, transformCash.LocalEulerAngle);
-                    }
-                }
-
-                if (target.transform.localScale != transformCash.LocalScale)
-                {
-                    if (scaleCalcType == ValueCalcType.None)
-                    {
-                        target.transform.localScale = transformCash.LocalScale;
-                    }
-                    
-                    if (scaleCalcType == ValueCalcType.Add)
-                    {
-                        target.transform.localScale += transformCash.LocalScale;
-                    }
-
-                    if (scaleCalcType == ValueCalcType.Subtract)
-                    {
-                        target.transform.localScale -= transformCash.LocalScale;
-                    }
-
-                    if (scaleCalcType == ValueCalcType.Multiply)
-                    {
-                        var offsetScale = target.transform.localScale;
-                        target.transform.localScale = Vector3.Scale(offsetScale, transformCash.LocalScale);
-                    }
-
-                }
-            // }
-
-        }
-        
-        // IEnumerator ChangeColor()
+        // private void UpdateAnimation(AnimationStagger animationStagger, float progress)
         // {
-        //     //赤色にする
-        //     gameObject.GetComponent<Renderer>().material.color = Color.red;
+        //     animationStagger.progress = progress;
+        //     animationStagger.UpdateSampleAnimation(progress);
         //
-        //     //3秒停止
-        //     yield return new WaitForSeconds(3);
-        //
-        //     //青色にする
-        //     gameObject.GetComponent<Renderer>().material.color = Color.blue;
         // }
+        
 
 
         private void OnDestroy()

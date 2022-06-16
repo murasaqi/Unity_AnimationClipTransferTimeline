@@ -1,6 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <ui:Label text="name" display-tooltip-when-elided="true" name="Name" style="margin-top: 1px; margin-left: 0; margin-right: 0; margin-bottom: 1px; -unity-font-style: italic; color: rgba(194, 157, 238, 255);" />
+    <ui:Label text="name" display-tooltip-when-elided="true" name="Name" style="margin-top: 1px; margin-left: 0; margin-right: 0; margin-bottom: 1px; -unity-font-style: italic; color: rgb(194, 157, 238);" />
     <ui:VisualElement style="padding-left: 20px;">
+        <uie:ObjectField label="Animation Clip" binding-path="assignedAnimationClip" name="AnimationClipField" style="margin-top: 2px; margin-bottom: 2px;" />
+        <ui:ListView focusable="true" binding-path="assignedMultipleAnimationClip" name="AnimationClipListField" header-title="AnimationClipList" show-add-remove-footer="false" style="height: 29px;" />
         <ui:MinMaxSlider min-value="0.3" max-value="0.7" low-limit="0" high-limit="1" name="MinMaxSlider" style="flex-direction: row; align-items: center; margin-top: 4px;" />
         <ui:Foldout text="Values" focusable="false" value="false" name="ValuesFoldout" style="-unity-font-style: normal; font-size: 12px;">
             <ui:VisualElement style="flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: nowrap;">
@@ -9,11 +11,11 @@
                     <uie:FloatField value="0" name="LowLimit" binding-path="lowLimit" readonly="false" style="min-width: auto; max-width: 40px; width: auto; justify-content: space-between;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="StartElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto; margin-left: 3px; margin-right: 3px; margin-top: 0; margin-bottom: 0;">
-                    <ui:Label text="Start" display-tooltip-when-elided="true" name="DelayLabel" style="color: rgba(51, 229, 122, 255);" />
+                    <ui:Label text="Start" display-tooltip-when-elided="true" name="DelayLabel" style="color: rgb(51, 229, 122);" />
                     <uie:FloatField value="0.3" name="Start" binding-path="startTiming" style="min-width: auto; max-width: 40px; width: auto;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="EndElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto;">
-                    <ui:Label text="End" display-tooltip-when-elided="true" name="EndLabel" style="color: rgba(241, 211, 72, 255);" />
+                    <ui:Label text="End" display-tooltip-when-elided="true" name="EndLabel" style="color: rgb(241, 211, 72);" />
                     <uie:FloatField value="0.3" name="End" binding-path="endTiming" style="min-width: auto; max-width: 40px; width: auto;" />
                 </ui:VisualElement>
                 <ui:VisualElement name="HighLimitElement" style="flex-direction: row; align-items: center; width: auto; max-width: none; min-width: auto; justify-content: flex-end;">

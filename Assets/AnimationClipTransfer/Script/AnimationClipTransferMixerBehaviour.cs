@@ -82,85 +82,85 @@ namespace UMotionGraphicUtilities
             if (clipAsset.ToggleActiveOnClip) target.SetActive(true);
 
 
-            if (transformCash.Progress != progress)
-            {
-
-
-
-                Debug.Log($"Update motion");
-                // animation.clip = input.AnimationClip;
-                // animation.enabled = true;
-                animation.clip.SampleAnimation(target, (float) progress * animation.clip.averageDuration);
-                transformCash.Progress = progress;
-                // AnimationClipはなんかGetKeyできないからTransformのどこに差分があるかを初期値と比較してるやつ
-                if (target.transform.localPosition != transformCash.LocalPosition)
-                {
-
-                    if (clipAsset.PositionCalcType == ValueCalcType.Add)
-                    {
-                        target.transform.localPosition += transformCash.LocalPosition;
-                    }
-
-                    if (clipAsset.PositionCalcType == ValueCalcType.Subtract)
-                    {
-                        target.transform.localPosition -= transformCash.LocalPosition;
-                    }
-
-                    if (clipAsset.PositionCalcType == ValueCalcType.Multiply)
-                    {
-                        var offsetPos = target.transform.localPosition;
-                        target.transform.localPosition = Vector3.Scale(offsetPos, transformCash.LocalPosition);
-                    }
-
-                    if (clipAsset.PositionCalcType == ValueCalcType.Acceleration)
-                    {
-                        var offsetPos = target.transform.localPosition;
-                        target.transform.localPosition = Vector3.Scale(offsetPos, transformCash.LocalPosition);
-                    }
-
-                }
-
-                if (target.transform.localEulerAngles != transformCash.LocalEulerAngle)
-                {
-
-                    if (clipAsset.EulerCalcType == ValueCalcType.Add)
-                    {
-                        target.transform.localEulerAngles += transformCash.LocalEulerAngle;
-                    }
-
-                    if (clipAsset.EulerCalcType == ValueCalcType.Subtract)
-                    {
-                        target.transform.localEulerAngles -= transformCash.LocalEulerAngle;
-                    }
-
-                    if (clipAsset.EulerCalcType == ValueCalcType.Multiply)
-                    {
-                        var offsetEuler = target.transform.localEulerAngles;
-                        target.transform.localEulerAngles = Vector3.Scale(offsetEuler, transformCash.LocalEulerAngle);
-                    }
-                }
-
-                if (target.transform.localScale != transformCash.LocalScale)
-                {
-
-                    if (clipAsset.ScaleCalcScale == ValueCalcType.Add)
-                    {
-                        target.transform.localScale += transformCash.LocalScale;
-                    }
-
-                    if (clipAsset.ScaleCalcScale == ValueCalcType.Subtract)
-                    {
-                        target.transform.localScale -= transformCash.LocalScale;
-                    }
-
-                    if (clipAsset.ScaleCalcScale == ValueCalcType.Multiply)
-                    {
-                        var offsetScale = target.transform.localScale;
-                        target.transform.localScale = Vector3.Scale(offsetScale, transformCash.LocalScale);
-                    }
-
-                }
-            }
+            // if (transformCash.Progress != progress)
+            // {
+            //
+            //
+            //
+            //     Debug.Log($"Update motion");
+            //     // animation.clip = input.AnimationClip;
+            //     // animation.enabled = true;
+            //     animation.clip.SampleAnimation(target, (float) progress * animation.clip.averageDuration);
+            //     transformCash.Progress = progress;
+            //     // AnimationClipはなんかGetKeyできないからTransformのどこに差分があるかを初期値と比較してるやつ
+            //     if (target.transform.localPosition != transformCash.LocalPosition)
+            //     {
+            //
+            //         if (clipAsset.PositionCalcType == ValueCalcType.Add)
+            //         {
+            //             target.transform.localPosition += transformCash.LocalPosition;
+            //         }
+            //
+            //         if (clipAsset.PositionCalcType == ValueCalcType.Subtract)
+            //         {
+            //             target.transform.localPosition -= transformCash.LocalPosition;
+            //         }
+            //
+            //         if (clipAsset.PositionCalcType == ValueCalcType.Multiply)
+            //         {
+            //             var offsetPos = target.transform.localPosition;
+            //             target.transform.localPosition = Vector3.Scale(offsetPos, transformCash.LocalPosition);
+            //         }
+            //
+            //         if (clipAsset.PositionCalcType == ValueCalcType.Acceleration)
+            //         {
+            //             var offsetPos = target.transform.localPosition;
+            //             target.transform.localPosition = Vector3.Scale(offsetPos, transformCash.LocalPosition);
+            //         }
+            //
+            //     }
+            //
+            //     if (target.transform.localEulerAngles != transformCash.LocalEulerAngle)
+            //     {
+            //
+            //         if (clipAsset.EulerCalcType == ValueCalcType.Add)
+            //         {
+            //             target.transform.localEulerAngles += transformCash.LocalEulerAngle;
+            //         }
+            //
+            //         if (clipAsset.EulerCalcType == ValueCalcType.Subtract)
+            //         {
+            //             target.transform.localEulerAngles -= transformCash.LocalEulerAngle;
+            //         }
+            //
+            //         if (clipAsset.EulerCalcType == ValueCalcType.Multiply)
+            //         {
+            //             var offsetEuler = target.transform.localEulerAngles;
+            //             target.transform.localEulerAngles = Vector3.Scale(offsetEuler, transformCash.LocalEulerAngle);
+            //         }
+            //     }
+            //
+            //     if (target.transform.localScale != transformCash.LocalScale)
+            //     {
+            //
+            //         if (clipAsset.ScaleCalcScale == ValueCalcType.Add)
+            //         {
+            //             target.transform.localScale += transformCash.LocalScale;
+            //         }
+            //
+            //         if (clipAsset.ScaleCalcScale == ValueCalcType.Subtract)
+            //         {
+            //             target.transform.localScale -= transformCash.LocalScale;
+            //         }
+            //
+            //         if (clipAsset.ScaleCalcScale == ValueCalcType.Multiply)
+            //         {
+            //             var offsetScale = target.transform.localScale;
+            //             target.transform.localScale = Vector3.Scale(offsetScale, transformCash.LocalScale);
+            //         }
+            //
+            //     }
+            // }
 
         }
 
